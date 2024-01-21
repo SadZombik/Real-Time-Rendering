@@ -1,17 +1,26 @@
 #pragma once
 
+#include <stdio.h>
 #include <math.h>
 
 typedef struct Vector2 {
 	float x;
 	float y;
 } Vector2;
+       
+void PrintVector2(Vector2* v, const char* name) {
+    printf("%s\t: [ %f %f ]\n", name, v->x, v->y);
+}
 
 typedef struct Vector3 {
 	float x;
 	float y;
 	float z;
 } Vector3;
+       
+void PrintVector3(Vector3* v, const char* name) {
+    printf("%s\t: [ %f %f %f ]\n", name, v->x, v->y, v->z);
+}
 
 typedef struct Vector4 {
 	float x;
@@ -19,6 +28,10 @@ typedef struct Vector4 {
 	float z;
 	float w;
 } Vector4;
+       
+void PrintVector4(Vector4* v, const char* name) {
+    printf("%s\t: [ %f %f %f %f ]\n", name, v->x, v->y, v->z, v->w);
+}
 
 Vector2 Vector2Add(Vector2 v1, Vector2 v2) {
     Vector2 res = { v1.x + v2.x, v1.y + v2.y };

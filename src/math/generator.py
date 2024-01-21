@@ -5,6 +5,7 @@ def print_header():
     print(
 """#pragma once
 
+#include <stdio.h>
 #include <math.h>
 """)
     
@@ -14,16 +15,25 @@ def print_vectors():
     
     for i in range(2, 5): # 2 - 4
         values = ""
+        print_args = ""
+        floats_count = "[ "
         for v in range(0, i):
             values += '\t' + "float " + str(var_names[v]) + ';\n'
-
+            print_args += "v->" + str(var_names[v]) + ", "
+            floats_count += "%f "
         values = values.rstrip('\n')
+        print_args = print_args.rstrip(', ')
+        floats_count += "]"
 
         print(
 format("""typedef struct Vector{i} {{
 {values}
 }} Vector{i};
-""").format(i=i, values=values))
+       
+void PrintVector{i}(Vector{i}* v, const char* name) {{
+    printf("%s\\t: {floats_count}\\n", name, {print_args});
+}}
+""").format(i=i, values=values, floats_count=floats_count, print_args=print_args))
 
 def print_vector_funcs():
 
