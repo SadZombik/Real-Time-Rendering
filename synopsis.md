@@ -38,7 +38,7 @@ Per-polygon and per-vertex operations. It is divided into model and view transfo
 
 ### 2.4 The Raterizer Stage
 
-    Computes and sets colors for the pixels. It is divided into triangle setup, triangle transversal, pixel shading and merging.
+Computes and sets colors for the pixels. It is divided into triangle setup, triangle transversal, pixel shading and merging.
 
 - 2.4.1 Triangle setup
 
