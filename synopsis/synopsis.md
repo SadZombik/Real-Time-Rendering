@@ -21,26 +21,26 @@ user input, animations etc.
 Per-polygon and per-vertex operations. It is divided into model and view transform, vertex shadeing,
 projection, clipping and screen mapping. 
 
-### 2.3.1 Model and view transform
+#### 2.3.1 Model and view transform
 
 Model matrix describes model's position, orientation and scaling in world space. View matrix places 
 the camera at the origin and aim it.
 
-### 2.3.2 Vertex shading
+#### 2.3.2 Vertex shading
 
 Computing shading equations by using point location, normal, color etc. The result (colors, vectors,
 texture coordinates) are then sent to the rasterization stage to be interpolated. 
 
-### 2.3.3 Projection
+#### 2.3.3 Projection
 
 Transforms the view volume into a unit cube (canonical view volume) i.e. transforms the models in 
 normalized device coordinates.
 
-### 2.3.4 Clipping
+#### 2.3.4 Clipping
 
 Removes parts of the primitives that are outside the view volume.
 
-### 2.3.5 Screen mapping
+#### 2.3.5 Screen mapping
 
 The x and y coordinates od each primitive are transformed to form screen coordinates.    
 
@@ -49,19 +49,19 @@ The x and y coordinates od each primitive are transformed to form screen coordin
 Computes and sets colors for the pixels. It is divided into triangle setup, triangle transversal, 
 pixel shading and merging.
 
-### 2.4.1 Triangle setup
+#### 2.4.1 Triangle setup
 
 Scan conversion and iterpolation of the various shading data produced by geometry stage.
 
-### 2.4.2 Triangle transversal
+#### 2.4.2 Triangle transversal
 
 Finding which pixels are inside a triangle.
 
-### 2.4.3 Pixel shading
+#### 2.4.3 Pixel shading
 
 Per-pixel shading computations, texturing.
 
-### 2.4.4 Merging
+#### 2.4.4 Merging
 
 Handling color buffer, Z-buffer, alpha channel, stencil buffer, double buffering.
 
@@ -143,7 +143,7 @@ triangle strips or nothing.
 
 After vertex and geometry shaders perform their operations, the primitive is clipped and set up for rasterization.
 
-### 3.5.1 Stream Output
+#### 3.5.1 Stream Output
 
 The data always passed throught the pipeline andintermediate results could not be accessed, 
 but rasterization stage could be turned off entirely. In this case processed data can be 
@@ -212,7 +212,7 @@ $$
 Translation, rotation are rigid-body transforms. *Rigid-body* transform preserves the distances between transformed points and
 preserves handedness (never causes left and right to swap sides). These two matrices are useful for positioning and orienting objects.
 
-### 4.1.1. Translation
+#### 4.1.1. Translation
 
 A change form ome location toanother is represented by atranslation matrix **T**.
 
@@ -234,7 +234,7 @@ The multiplication of a vector $\text{v}=(v_s, v_y, v_z, 0)$ won't affect it, be
 The inverse of a translation matrix is the translation matrix with the opposite signs on each of the translation components. 
 $$T^{-1}(t) = T(-t)$$
 
-### 4.1.2. Rotation
+#### 4.1.2. Rotation
 
 A rotation transform rotates a vector by a given angle around a given axis.
 
@@ -283,7 +283,7 @@ Usage example: to rotate an object around a point $p$ we need to translate the o
 
 $$ X = T(P)R_z(\phi)T(-p) $$
 
-### 4.1.3. Scaling
+#### 4.1.3. Scaling
 
 A scaling matrix $S(s) = S(s_x, s_y,s_x)$ scales entity with factors $s_x,\ s_y$ and $s_z$ along the x-, y-, and z-directions respectively.
 
@@ -322,12 +322,12 @@ $$
     \end{pmatrix}.
 $$
 
-### 4.1.4. Shearing
+#### 4.1.4. Shearing
 
-### 4.1.5. Concatenation of Transforms
+#### 4.1.5. Concatenation of Transforms
 
-### 4.1.6. Rigid-Body Transform
+#### 4.1.6. Rigid-Body Transform
 
-### 4.1.7. Normal Transform
+#### 4.1.7. Normal Transform
 
-### 4.1.8. Computation of Inverses
+#### 4.1.8. Computation of Inverses
