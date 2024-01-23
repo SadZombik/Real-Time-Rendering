@@ -23,7 +23,7 @@ projection, clipping and screen mapping.
 
 ### 2.3.1 Model and view transform
 
-Model matrix describes model's position, orientation and scalling in world space. View matrix places 
+Model matrix describes model's position, orientation and scaling in world space. View matrix places 
 the camera at the origin and aim it.
 
 ### 2.3.2 Vertex shading
@@ -178,7 +178,7 @@ $$
 
 Combining linear transforms and translations canbe done using an *affine transform* storead as 4x4 matrix.
 An affine transform is one that performs a linear transform and then translation. To represent 4-element vector we use
-*homogeneous notation*. All translation, rotation, scalling, reflection and shearing matrices are affine. 
+*homogeneous notation*. All translation, rotation, scaling, reflection and shearing matrices are affine. 
 
 $$
     \begin{align*}
@@ -195,25 +195,132 @@ $$
 
 | Notation               | Name                    | Characteristics |
 | :--------------------- | :---------------------- | :---- |
-| $$T(t) $$              | Translation matrix      | Moves a point affine <br> Affine. |
-| $$ R_x(\rho) $$        | Rotation matrix         | Rotates *ρ* radians around the x-axis <br> Orthogonal & affine. |
-| $$ R $$                | Rotation matrix         | Any rotation matrix. <br> Orthogonal & affine. |
-| $$ S(s) $$             | Scalling matrix         | Scales alongall axes according to *s*. <br> Affine. |
-| $$ H_{ij}(s) $$        | Shear matrix            | Shears component *i* by a factor *s*, with respect to component *j*. <br> Affine |
-| $$ E(h,\ p,\ r) $$     | Euler transform         | Orientation matrix given by head(yaw), pitch, roll. <br> Orthogonal & affine.|
-| $$ P_o(s) $$           | Orthographic projection | Parallel projects onto some plane or volume. <br> Affine. |
-| $$ P_p(s) $$           | Perspective projection  | Projects with perspecive onto a plane or volume |
-| $$ slepr(q,\ r,\ t) $$ | Slerp transform         | Creates an interpolated quarternion with respect to the quarternions *q* and *r*, and the parameter *t* |
+| $$T(t) $$             | Translation matrix      | Moves a point affine <br> Affine. |
+| $$R_x(\rho) $$        | Rotation matrix         | Rotates *ρ* radians around the x-axis <br> Orthogonal & affine. |
+| $$R $$                | Rotation matrix         | Any rotation matrix. <br> Orthogonal & affine. |
+| $$S(s) $$             | Scaling matrix          | Scales alongall axes according to *s*. <br> Affine. |
+| $$H_{ij}(s) $$        | Shear matrix            | Shears component *i* by a factor *s*, with respect to component *j*. <br> Affine |
+| $$E(h,\ p,\ r) $$     | Euler transform         | Orientation matrix given by head(yaw), pitch, roll. <br> Orthogonal & affine.|
+| $$P_o(s) $$           | Orthographic projection | Parallel projects onto some plane or volume. <br> Affine. |
+| $$P_p(s) $$           | Perspective projection  | Projects with perspecive onto a plane or volume |
+| $$slepr(q,\ r,\ t) $$ | Slerp transform         | Creates an interpolated quarternion with respect to the quarternions *q* and *r*, and the parameter *t* |
 
 **Table 4.1.** Summary of most of the transforms in this chapter.
 
 ### 4.1 Basic Transforms
 
+Translation, rotation are rigid-body transforms. *Rigid-body* transform preserves the distances between transformed points and
+preserves handedness (never causes left and right to swap sides). These two matrices are useful for positioning and orienting objects.
+
 ### 4.1.1. Translation
+
+A change form ome location toanother is represented by atranslation matrix **T**.
+
+$$
+    T(t) = T(t_x, t_y, t_z) = 
+    \begin{pmatrix}
+        1 & 0 & 0 & t_x \\
+        0 & 1 & 0 & t_y \\
+        0 & 0 & 1 & t_z \\
+        0 & 0 & 0 & 1
+    \end{pmatrix}.
+$$
+
+The multiplication of a point $p = (p_x, p_y, p_z, 1)$ with $T(t)$ yields a new point $p' = (p_x + t_x, p_y + t_y, p_z + t_z, 1)$
+which is clearly a translation. 
+
+The multiplication of a vector $\text{v}=(v_s, v_y, v_z, 0)$ won't affect it, because a direction vector cannot be translated.
+
+The inverse of a translation matrix is the translation matrix with the opposite signs on each of the translation components. 
+$$T^{-1}(t) = T(-t)$$
 
 ### 4.1.2. Rotation
 
-### 4.1.3. Scalling
+A rotation transform rotates a vector by a given angle around a given axis.
+
+$$
+    \begin{align*}
+        R_x(\phi) &= 
+        \begin{pmatrix}
+            1 & 0         &  0         & 0 \\
+            0 & cos\ \phi & -sin\ \phi & 0 \\
+            0 & sin\ \phi &  cos\ \phi & 0 \\
+            0 & 0         &  0         & 1
+        \end{pmatrix},
+    \\
+    \\
+        R_y(\phi) &= 
+        \begin{pmatrix}
+             cos\ \phi & 0 & sin\ \phi & 0 \\
+             0         & 1 & 0         & 0 \\
+            -sin\ \phi & 0 & cos\ \phi & 0 \\
+             0         & 0 & 0         & 1
+        \end{pmatrix},
+    \\
+    \\
+        R_z(\phi) &= 
+        \begin{pmatrix}
+            cos\ \phi & -sin\ \phi & 0 & 0 \\
+            sin\ \phi &  cos\ \phi & 0 & 0 \\
+            0         & 0          & 1 & 0 \\
+            0         & 0          & 0 & 1
+        \end{pmatrix}.
+    \end{align*}
+$$
+
+For every 3 x 3 rotation matrix that rotates $\phi$ radians around any axis, the trace is constant independent 
+of the axis and is computed as:
+
+$$ tr(R) = 1 + 2 cos\ \phi $$
+
+*Trace* of matrix $tr(M)$ is the sum of the diagonal elements of square matrix:
+
+$$ tr(M) = \sum_{i=0}^{n-1} m_{ii} $$
+
+All rotation matrices have a determenant of one and are orthogonal.
+
+Usage example: to rotate an object around a point $p$ we need to translate the object so that $p$ coincides with the origin which is done using $T(-p)$. Then actual rotation $R_z(\phi)$ and finally object has tobe translated back using $T(p)$. The resulting transform will be: 
+
+$$ X = T(P)R_z(\phi)T(-p) $$
+
+### 4.1.3. Scaling
+
+A scaling matrix $S(s) = S(s_x, s_y,s_x)$ scales entity with factors $s_x,\ s_y$ and $s_z$ along the x-, y-, and z-directions respectively.
+
+$$ 
+    S(s) = 
+    \begin{pmatrix}
+        s_x & 0   & 0    &   0 \\
+        0   & s_y & 0    &   0 \\
+        0   & 0   & s_z  &   0 \\
+        0   & 0   & 0    &   1 
+    \end{pmatrix}
+$$
+
+The scaling operation is called *uniform* if $s_x=s_y=s_z$ and *nonuniform* otherwise.
+
+The inverse is $S^-1(s) = S(1/s_x, 1/s_y, 1/s_z)$.
+
+The element (3,3) of scaling matrix affects w-component of homogeneous coordinate, and so scales every coordinate transformed by
+matrix. To scale uniformly by a factor of $s$ the elements (0,0), (1,1), and (2,2) can be set to $s$, or the element (3,3) can be set
+to $1/s$
+
+$$ 
+    S(s) = 
+    \begin{pmatrix}
+        s & 0 & 0 & 0 \\
+        0 & s & 0 & 0 \\
+        0 & 0 & s & 0 \\
+        0 & 0 & 0 & 1 
+    \end{pmatrix},\
+    S'(s) = 
+    \begin{pmatrix}
+        1 & 0 & 0 & 0 \\
+        0 & 1 & 0 & 0 \\
+        0 & 0 & 1 & 0 \\
+        0 & 0 & 0 & 1/s 
+    \end{pmatrix}.
+$$
 
 ### 4.1.4. Shearing
 
