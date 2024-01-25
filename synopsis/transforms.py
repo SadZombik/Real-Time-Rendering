@@ -28,7 +28,7 @@ def T(t_x=1, t_y=1, t_z=1):
         [0, 0, 0, 1]
     ])
 
-def T(point):
+def T_p(point):
     return np.matrix([
         [1, 0, 0, float(point[0])],
         [0, 1, 0, float(point[1])],
@@ -77,7 +77,7 @@ def R_z(phi):
         [0,            0,           0, 1]
     ])
 
-def rotation_test():
+def rotation_matrix_test():
     print("rotation_test:\n")
 
     # test that 
@@ -97,6 +97,57 @@ def rotation_test():
     # Determinant
     print(np.linalg.det(R) == 1)
 
+def rotation_test():
+    ax = plt.figure().add_subplot(projection='3d')
+
+    VERTICES = np.array([
+        [ 1, 1, 0],
+        [ 1,-1, 0],
+        [-1,-1, 0],
+        [-1, 1, 0],
+    ])
+
+    x = []
+    y = []
+    z = []
+
+    for v in VERTICES:
+        x.append(v[0])
+        y.append(v[1])
+        z.append(v[2])
+
+    x.append(VERTICES[0][0])
+    y.append(VERTICES[0][1])
+    z.append(VERTICES[0][2])
+
+    rotated = []
+
+    for v in VERTICES:
+        mul = T(0, 2, 0) * R_z(np.pi / 4) * point(v[0], v[1], v[2])
+        res = [mul[0].A1[0], mul[1].A1[0], mul[2].A1[0]]
+        rotated.append(res)
+
+    ax.plot(x, y, z)
+    x = []
+    y = []
+    z = []
+
+    for r in rotated:
+        x.append(r[0])
+        y.append(r[1])
+        z.append(r[2])
+
+    x.append(rotated[0][0])
+    y.append(rotated[0][1])
+    z.append(rotated[0][2])
+
+    ax.plot(x, y, z)
+
+    ax.set_xlim(-5, 5)
+    ax.set_ylim(-5, 5)
+    ax.set_zlim(-5, 5)
+    plt.show()
+
 def example_usage_test():
     p = point(2, 2, 0)
     
@@ -106,4 +157,5 @@ def example_usage_test():
 if __name__ == '__main__':
     # translation_test()
     # rotation_test()
-    example_usage_test()
+    # example_usage_test()
+    rotation_test()

@@ -187,10 +187,8 @@ $$
     \end{align*}
 $$
 
-> [!IMPORTANT]
 > The main characteristic of an affine matrix is that it preserves the parallelism of lines, but necessarily lengths and angles.
 
-> [!IMPORTANT]
 > Orthogonal matrix is a matrix whose inverse is its transposal.
 
 | Notation               | Name                    | Characteristics |
@@ -322,12 +320,122 @@ $$
     \end{pmatrix}.
 $$
 
+A negative value on one or three components of $s$ geveis a *reflection matrix*, also called *mirror matrix*.
+
+
+If scalling should be performed in other directions, a compound transform is needed. Construct a matrix $F$ that makes new coordinate system, then scale and transform back:
+
+$$ X = FS(s)F^T $$
+
 #### 4.1.4. Shearing
+    z                        z
+    ^                        ^
+    |                        | s
+    |_____                   |<->______
+    |     |                  |  /     /
+    |     |      H_xz(s) ->  | /     /
+    |_____|                  |/_____/
+    +----------> x           +----------> x
+
+Figure 4.3. The effect of shearing $H_{xz}(s)$
+
+Can be used to distort an entire scene to create psychedeliceffect or fuzzy reflections. 
+
+There are six basic shearing matrices: $ H_{xy}(s),\ H_{xz}(s),\ H_{yx}(s),\ H_{yz}(s),\ H_{zx}(s),\ H_{zy}(s) $. The first subscript
+denotes which coordinate is being changed by shear matrix, the second indicates the coordinate which does the shearing. For example:
+
+$$
+    H_{xz}(s) = 
+    \begin{pmatrix}
+        1 & 0 & s & 0 \\
+        0 & 1 & 0 & 0 \\
+        0 & 0 & 1 & 0 \\
+        0 & 0 & 0 & 1 
+    \end{pmatrix}.  
+$$
+
+The effect of multiplying this matrix with a point $p$ yields a point: $ (p_x + sp_z, p_y, p_z)^T $. The inverse of shearing matrix
+is shearing in the opposite direction: $ H^{-1}_{ij}(s) = H_{ij}(-s) $. Shearing is volume preserving transformation, since $|H| = 1$.
 
 #### 4.1.5. Concatenation of Transforms
 
+Matrix operations are noncommutativity, the order in which the matrices occur matters.
+
+$$ M_1M_2 \neq M_2M_1 $$
+
 #### 4.1.6. Rigid-Body Transform
+
+Rigid-body transform preserves lengths, angles and handedness of the object. Ant rigid-body matrix $X$ can be written as the concatenation of translation and rotation:
+
+$$ 
+    X = T(t)R = 
+    \begin{pmatrix}
+        r_{00} & r_{01} & r_{02} & t_x \\
+        r_{10} & r_{11} & r_{12} & t_y \\
+        r_{20} & r_{21} & r_{22} & t_z \\
+        0      & 0      & 0      & 1
+    \end{pmatrix}.
+$$
+
+The inverse of $X$ is computed as $ X^{-1} = (T(t)R)^{-1} = R^{-1}T(t)^{-1} = R^T T(-t) $. Thus, to compute it, the upper left 3 x 3
+matrix of $R$ is transposed, the translation values of $T$ change sign and multiplication order becomes opposite.
+
+Another way to calculate the inverse of $X$ is to consider $R$ and X in the following notation:
+
+$$
+    \bar{R} = (r,_0\ r,_1\ r,_2) = \begin{pmatrix} r_0^T \\\\ r_1^T \\\\ r_2^T \end{pmatrix},
+    \\
+    X =
+    \begin{pmatrix}
+        \Overrightarrow{\bar{R}} & t \\
+        0^T & 1
+    \end{pmatrix},
+$$
+
+Here, $0$ is a 3 x 1 column vector filled with zeros. The inverse:
+
+$$
+    X^-1 =
+    \begin{pmatrix}
+        r_0 & r_1 & r_2 & -\bar{R}^T t \\
+        0 & 0 & 0 & 1
+    \end{pmatrix}.
+$$
 
 #### 4.1.7. Normal Transform
 
+A single matrix can be used to transform objects and their geometry. The same matrix can also transform tangent vectors following
+along these objects. However it cannot always be used to transform the surface normal. The proper way isto use matrix's adjoint. 
+The adjoint is always guaranteed to exist. Normal is not guaranteed to be of unit lenth after being transformed, so typically
+needs to be normalized.
+
+> Adjoint matrix calculation starts by defining the subdeterminant (cofactor) $ d^M_{ij} $ of an n x n
+> matrix $M$ as the determinant that is obtained by deleting row $i$ and column $j$ and the taking the determinant of the resulting
+> (n-1) x (n-1) matrix.
+>
+>   $$
+>       d^M_{02} =
+>       \begin{vmatrix}
+>           m_{10} & m_{11} \\
+>           m_{20} & m_{21}
+>       \end{vmatrix}.
+>   $$
+> 
+> For a 3 x 3 matrix, the adjoint is then 
+> 
+> $$
+>       adj(M) = 
+>       \begin{pmatrix}
+>           d_{00} & -d_{10} & d_{20} \\
+>           -d_{01} & d_{11} & -d_{21} \\
+>           d_{02} & -d_{12} & d_{22}
+>       \end{pmatrix},
+>   $$
+> Where we have left out the superscript $M$ ofthe subdeterminants for clarity. Note the signs and the order in which the
+> subdeterminants appear. If we want to compute the adjoint $A$ of an arbitrary sized matrix $M$, then the component at 
+> position $(i,j)$ > is $$ [a_{ij}] = \lbrack (-1)^{(i+j)} d^M_{ij} \rbrack. $$ <br>
+
+...
+
 #### 4.1.8. Computation of Inverses
+
