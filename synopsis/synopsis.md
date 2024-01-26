@@ -1,79 +1,77 @@
-# Synopsis of the "Real-Time Rendering" book
+# **Synopsis of the "Real-Time Rendering" book**
 
-## 1 Introduction
+# 2 Graphics Rendering Pipeline
 
-## 2 Graphics Rendering Pipeline
-
-### 2.1 Architecture
+## 2.1 Architecture
 
 Nonpipelined system that is then divided into *n* pipelined stages could give a speedup of a factor of *n*
 by parallelizing. The slowest execution stage is the *bottleneck*, it determines the speed of the entire
 application.
 
-### 2.2 The Application Stage
+## 2.2 The Application Stage
 
 The part of the application that executes on CPU and over which a programmer has full control. The most
 important task is feeding rendering primitives to the geometry stage. Also includes collision detection,
 user input, animations etc.
 
-### 2.3 The Geometry Stage
+## 2.3 The Geometry Stage
 
 Per-polygon and per-vertex operations. It is divided into model and view transform, vertex shadeing,
 projection, clipping and screen mapping. 
 
-#### 2.3.1 Model and view transform
+### 2.3.1 Model and view transform
 
 Model matrix describes model's position, orientation and scaling in world space. View matrix places 
 the camera at the origin and aim it.
 
-#### 2.3.2 Vertex shading
+### 2.3.2 Vertex shading
 
 Computing shading equations by using point location, normal, color etc. The result (colors, vectors,
 texture coordinates) are then sent to the rasterization stage to be interpolated. 
 
-#### 2.3.3 Projection
+### 2.3.3 Projection
 
 Transforms the view volume into a unit cube (canonical view volume) i.e. transforms the models in 
 normalized device coordinates.
 
-#### 2.3.4 Clipping
+### 2.3.4 Clipping
 
 Removes parts of the primitives that are outside the view volume.
 
-#### 2.3.5 Screen mapping
+### 2.3.5 Screen mapping
 
 The x and y coordinates od each primitive are transformed to form screen coordinates.    
 
-### 2.4 The Raterizer Stage
+## 2.4 The Raterizer Stage
 
 Computes and sets colors for the pixels. It is divided into triangle setup, triangle transversal, 
 pixel shading and merging.
 
-#### 2.4.1 Triangle setup
+### 2.4.1 Triangle setup
 
 Scan conversion and iterpolation of the various shading data produced by geometry stage.
 
-#### 2.4.2 Triangle transversal
+### 2.4.2 Triangle transversal
 
 Finding which pixels are inside a triangle.
 
-#### 2.4.3 Pixel shading
+### 2.4.3 Pixel shading
 
 Per-pixel shading computations, texturing.
 
-#### 2.4.4 Merging
+### 2.4.4 Merging
 
 Handling color buffer, Z-buffer, alpha channel, stencil buffer, double buffering.
 
-## 3 Graphics Processing Unit (GPU)
+# 3 Graphics Processing Unit (GPU)
 
-### 3.1 GPU Pipeline Overview
+## 3.1 GPU Pipeline Overview
 
 GPU implementation of the rendering pipeline: vertex shader -> geometry shader -> clipping -> screen
 mapping -> triangle setup -> triangle transversal -> pixel(fragment) shader -> merger. 
 Some of them are fully programmable, others configurable and the rest are completely fixed.
 
-### 3.2 The Programmable Shader Stage
+## 3.2 The Programmable Shader Stage
 
 Each programmable shader stage has two types of inputs: *uniform* (contant during drawcall) and 
 *varying* inputs. A compiled shader is stored as string, which is passed tothe GPU via the driver.
@@ -105,13 +103,13 @@ Each programmable shader stage has two types of inputs: *uniform* (contant durin
 ```
 Figure 3.2. Common-shader core VM architecture and register layout, under DirectX 10.
 
-### 3.3 The Evolution of Programmable Shading
+## 3.3 The Evolution of Programmable Shading
 
 ```
 
 ```
 
-### 3.4 The Vertex Shader
+## 3.4 The Vertex Shader
 
 Some data manipulations happens before vertex shader by *input assembler*, it prepares sets of vertices,
 primitives, colors and arrays for instancing, meshes etc.
@@ -131,7 +129,7 @@ Other uses for the vertex shader include :
 
 The output can be consumed in various ways.
 
-### 3.5 The Geometry Shader
+## 3.5 The Geometry Shader
 
 Located immediately after the vertex shader and itsuse is optional. Main usage is modifying incoming data,
 making copies, creating various sized particles, finding object edges for shadow alghoritms.
@@ -143,26 +141,26 @@ triangle strips or nothing.
 
 After vertex and geometry shaders perform their operations, the primitive is clipped and set up for rasterization.
 
-#### 3.5.1 Stream Output
+### 3.5.1 Stream Output
 
 The data always passed throught the pipeline andintermediate results could not be accessed, 
 but rasterization stage could be turned off entirely. In this case processed data can be 
 sent back throught the pipeline for *iterative processing*. It is usefull for simulating 
 water and other particle effects.
 
-### 3.6 The Pixel Shader
+## 3.6 The Pixel Shader
 
 Typically sets the fragment color and some operations such as fog, alpha testing. 
 
-### 3.7 The Merging Stage
+## 3.7 The Merging Stage
 
 Same as [2.4.4](#244-merging)
 
-### 3.8 Effects
+## 3.8 Effects
 
 Effects languages, such as HLSL FX, CgFX and others were invented to set states variables of particular configurations.
 
-## 4 Transforms
+# 4 Transforms
 
 A *tranform* is an operation that takes entities(pointss, vectors or colors) and converts them in some way to position,
 reshape and animate objects, lights and cameras.
@@ -205,12 +203,12 @@ $$
 
 **Table 4.1.** Summary of most of the transforms in this chapter.
 
-### 4.1 Basic Transforms
+## 4.1 Basic Transforms
 
 Translation, rotation are rigid-body transforms. *Rigid-body* transform preserves the distances between transformed points and
 preserves handedness (never causes left and right to swap sides). These two matrices are useful for positioning and orienting objects.
 
-#### 4.1.1. Translation
+### 4.1.1. Translation
 
 A change form ome location toanother is represented by atranslation matrix **T**.
 
@@ -232,7 +230,7 @@ The multiplication of a vector $\text{v}=(v_s, v_y, v_z, 0)$ won't affect it, be
 The inverse of a translation matrix is the translation matrix with the opposite signs on each of the translation components. 
 $$T^{-1}(t) = T(-t)$$
 
-#### 4.1.2. Rotation
+### 4.1.2. Rotation
 
 A rotation transform rotates a vector by a given angle around a given axis.
 
@@ -275,13 +273,16 @@ $$ tr(R) = 1 + 2 cos\ \phi $$
 
 $$ tr(M) = \sum_{i=0}^{n-1} m_{ii} $$
 
-All rotation matrices have a determenant of one and are orthogonal.
+All rotation matrices have a determenant of one and are orthogonal. To rotate in te opposite direction around the same axis the
+inverse can be used:
+
+$$ R_i^{-1} (\phi) = R_i(-\phi) $$
 
 Usage example: to rotate an object around a point $p$ we need to translate the object so that $p$ coincides with the origin which is done using $T(-p)$. Then actual rotation $R_z(\phi)$ and finally object has tobe translated back using $T(p)$. The resulting transform will be: 
 
 $$ X = T(P)R_z(\phi)T(-p) $$
 
-#### 4.1.3. Scaling
+### 4.1.3. Scaling
 
 A scaling matrix $S(s) = S(s_x, s_y,s_x)$ scales entity with factors $s_x,\ s_y$ and $s_z$ along the x-, y-, and z-directions respectively.
 
@@ -327,7 +328,7 @@ If scalling should be performed in other directions, a compound transform is nee
 
 $$ X = FS(s)F^T $$
 
-#### 4.1.4. Shearing
+### 4.1.4. Shearing
     z                        z
     ^                        ^
     |                        | s
@@ -357,13 +358,13 @@ $$
 The effect of multiplying this matrix with a point $p$ yields a point: $ (p_x + sp_z, p_y, p_z)^T $. The inverse of shearing matrix
 is shearing in the opposite direction: $ H^{-1}_{ij}(s) = H_{ij}(-s) $. Shearing is volume preserving transformation, since $|H| = 1$.
 
-#### 4.1.5. Concatenation of Transforms
+### 4.1.5. Concatenation of Transforms
 
 Matrix operations are noncommutativity, the order in which the matrices occur matters.
 
 $$ M_1M_2 \neq M_2M_1 $$
 
-#### 4.1.6. Rigid-Body Transform
+### 4.1.6. Rigid-Body Transform
 
 Rigid-body transform preserves lengths, angles and handedness of the object. Ant rigid-body matrix $X$ can be written as the concatenation of translation and rotation:
 
@@ -402,7 +403,7 @@ $$
     \end{pmatrix}.
 $$
 
-#### 4.1.7. Normal Transform
+### 4.1.7. Normal Transform
 
 A single matrix can be used to transform objects and their geometry. The same matrix can also transform tangent vectors following
 along these objects. However it cannot always be used to transform the surface normal. The proper way isto use matrix's adjoint. 
@@ -435,7 +436,27 @@ needs to be normalized.
 > subdeterminants appear. If we want to compute the adjoint $A$ of an arbitrary sized matrix $M$, then the component at 
 > position $(i,j)$ > is $$ [a_{ij}] = \lbrack (-1)^{(i+j)} d^M_{ij} \rbrack. $$ <br>
 
-...
+The traditional way to transform the normal is computing the transpose of the inverse. 
 
-#### 4.1.8. Computation of Inverses
+### 4.1.8. Computation of Inverses
+
+Since inverse computation is expensive, the purpose of it should be taken into account when optimizing. For example,
+if the inverse is to be used for transforming vectors, then only 3 x 3 upper left part needs to be inverted.
+
+## 4.2. Special Matrix Transforms and Operations
+
+### 4.2.1. The Euler Transform
+
+This transform is an intuitive way to construct a matrix to orient an object in a ceratin direction. The Euler transform is
+the multiplication of three matrices, denoted as $E$ and given by:
+
+$$ E(h,p,r) = R_z(r) R_x(p) R_y(h) $$
+
+The Euler angles $h, p$ and $r$ represent in which order and how much the head, pitch and roll should rotate around their 
+respective axes.
+
+This method has a lot of limitations and issues, so it is better using quaternions.
+
+### 4.2.2. Extracting Parameters from the Euler Transform
+
 

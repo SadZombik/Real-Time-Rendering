@@ -5,7 +5,6 @@ project(Rendering)
 set(TARGET main)
 
 file(GLOB SOURCE
-    "src/main.c"
+    "src/main.cpp"
 )
-
 add_executable(main ${SOURCE})

@@ -40,8 +40,8 @@ def translation_test():
     print("translation_test:\n")
 
     # Just translates a point by 1 along x-axis
-    p = point(1, 2, 3)
-    point_translated = T(1, 0, 0) * p
+    p = point(1, 3, 0)
+    point_translated = T(0, 2, 0) * p
     print(point_translated)
 
     # T does not affect direction vector
@@ -155,7 +155,7 @@ def example_usage_test():
     print(X)
 
 if __name__ == '__main__':
-    # translation_test()
+    translation_test()
     # rotation_test()
     # example_usage_test()
-    rotation_test()
+    # rotation_test()
