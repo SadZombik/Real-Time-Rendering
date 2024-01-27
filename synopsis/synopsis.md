@@ -239,25 +239,25 @@ $$
         R_x(\phi) &= 
         \begin{pmatrix}
             1 & 0         &  0         & 0 \\
-            0 & cos\ \phi & -sin\ \phi & 0 \\
-            0 & sin\ \phi &  cos\ \phi & 0 \\
+            0 & \cos \phi & -\sin \phi & 0 \\
+            0 & \sin \phi &  \cos \phi & 0 \\
             0 & 0         &  0         & 1
         \end{pmatrix},
     \\
     \\
         R_y(\phi) &= 
         \begin{pmatrix}
-             cos\ \phi & 0 & sin\ \phi & 0 \\
+             \cos \phi & 0 & \sin \phi & 0 \\
              0         & 1 & 0         & 0 \\
-            -sin\ \phi & 0 & cos\ \phi & 0 \\
+            -\sin \phi & 0 & \cos \phi & 0 \\
              0         & 0 & 0         & 1
         \end{pmatrix},
     \\
     \\
         R_z(\phi) &= 
         \begin{pmatrix}
-            cos\ \phi & -sin\ \phi & 0 & 0 \\
-            sin\ \phi &  cos\ \phi & 0 & 0 \\
+            \cos \phi & -\sin \phi & 0 & 0 \\
+            \sin \phi &  \cos \phi & 0 & 0 \\
             0         & 0          & 1 & 0 \\
             0         & 0          & 0 & 1
         \end{pmatrix}.
@@ -267,7 +267,7 @@ $$
 For every 3 x 3 rotation matrix that rotates $\phi$ radians around any axis, the trace is constant independent 
 of the axis and is computed as:
 
-$$ tr(R) = 1 + 2 cos\ \phi $$
+$$ tr(R) = 1 + 2 \cos \phi $$
 
 *Trace* of matrix $tr(M)$ is the sum of the diagonal elements of square matrix:
 
@@ -459,4 +459,52 @@ This method has a lot of limitations and issues, so it is better using quaternio
 
 ### 4.2.2. Extracting Parameters from the Euler Transform
 
+It is useful to have a procedure that extracts the Euler parameters from an orthogonal matrix:
+
+$$
+    F =
+    \begin{pmatrix}
+        f_{00} & f_{01} & f_{02} \\
+        f_{10} & f_{11} & f_{12} \\
+        f_{20} & f_{21} & f_{22}
+    \end{pmatrix} = R_z(r) R_x(p) R_y(h) = E(h,p,r).
+$$
+
+Contatenating the three rotation matricex yields:
+
+$$
+    F =
+    \begin{pmatrix}
+        \cos r\cos h - \sin r\sin p\sin h & -\sin r\cos p & \cos r\sin h+\sin r\sin p\cos h \\
+        \sin r\cos h + \cos r\sin p\sin h & \cos r\cos p & \sin r\sin h-\cos r\sin p\cos h \\
+        -\cos p\sin h & \sin p & \cos p\cos h
+    \end{pmatrix}.
+$$
+$$ \frac{f_{01}}{f_{11}} = \frac{-\sin r}{\cos r} = -\tan r, $$
+$$ \frac{f_{20}}{f_{22}} = \frac{-\sin h}{\cos h} = -\tan h. $$
+
+Thus, the Euler parameters are extracted from a matrix $F$ isung *atan2(y, x)*:
+
+$$ 
+    \begin{align*}
+    h &= atan2(f_{20}, f_{22}), \\
+    p &= arcsin(f_{21}), \\
+    r &= atan2(-f_{01}, f_{11}).
+    \end{align*}
+$$
+
+However, there is a special case when $ \cos p = 0 $, because then $ f_{01} = f_{11}
+= 0 $, and so the *atan2* function cannot be used. Having $ \cos p = 0 $ implies that
+$ \sin p = \pm 1 $ and so $F$ simplifies to:
+
+$$
+    F =
+    \begin{pmatrix}
+        \cos(r \pm h) & 0     & \sin(r \pm h)  \\
+        \sin(r \pm h) & 0     & -\cos(r \pm h) \\
+        0             & \pm 1 & 0
+    \end{pmatrix}.
+$$
+
+### 4.2.3. Matrix Decomposition
 
