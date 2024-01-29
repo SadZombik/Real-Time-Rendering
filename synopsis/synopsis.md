@@ -189,26 +189,26 @@ $$
 
 > Orthogonal matrix is a matrix whose inverse is its transposal.
 
-| Notation               | Name                    | Characteristics |
-| :--------------------- | :---------------------- | :---- |
-| $$T(t) $$             | Translation matrix      | Moves a point affine <br> Affine. |
-| $$R_x(\rho) $$        | Rotation matrix         | Rotates *ρ* radians around the x-axis <br> Orthogonal & affine. |
-| $$R $$                | Rotation matrix         | Any rotation matrix. <br> Orthogonal & affine. |
-| $$S(s) $$             | Scaling matrix          | Scales alongall axes according to *s*. <br> Affine. |
-| $$H_{ij}(s) $$        | Shear matrix            | Shears component *i* by a factor *s*, with respect to component *j*. <br> Affine |
-| $$E(h,\ p,\ r) $$     | Euler transform         | Orientation matrix given by head(yaw), pitch, roll. <br> Orthogonal & affine.|
-| $$P_o(s) $$           | Orthographic projection | Parallel projects onto some plane or volume. <br> Affine. |
-| $$P_p(s) $$           | Perspective projection  | Projects with perspecive onto a plane or volume |
-| $$slepr(q,\ r,\ t) $$ | Slerp transform         | Creates an interpolated quarternion with respect to the quarternions *q* and *r*, and the parameter *t* |
+| Notation              | Name                    | Characteristics |
+| :-------------------- | :---------------------- | :---- |
+| $$T(t)$$              | Translation matrix      | Moves a point affine <br> Affine. |
+| $$R_x(\rho)$$         | Rotation matrix         | Rotates *ρ* radians around the x-axis <br> Orthogonal & affine. |
+| $$R$$                 | Rotation matrix         | Any rotation matrix. <br> Orthogonal & affine. |
+| $$S(s)$$              | Scaling matrix          | Scales alongall axes according to *s*. <br> Affine. |
+| $$H_{ij}(s)$$         | Shear matrix            | Shears component *i* by a factor *s*, with respect to component *j*. <br> Affine |
+| $$E(h,\ p,\ r)$$      | Euler transform         | Orientation matrix given by head(yaw), pitch, roll. <br> Orthogonal & affine.|
+| $$P_o(s)$$            | Orthographic projection | Parallel projects onto some plane or volume. <br> Affine. |
+| $$P_p(s)$$            | Perspective projection  | Projects with perspecive onto a plane or volume |
+| $$slepr(q,\ r,\ t)$$  | Slerp transform         | Creates an interpolated quarternion with respect to the quarternions *q* and *r*, and the parameter *t* |
 
-**Table 4.1.** Summary of most of the transforms in this chapter.
+**Table 4.1** Summary of most of the transforms in this chapter.
 
 ## 4.1 Basic Transforms
 
 Translation, rotation are rigid-body transforms. *Rigid-body* transform preserves the distances between transformed points and
 preserves handedness (never causes left and right to swap sides). These two matrices are useful for positioning and orienting objects.
 
-### 4.1.1. Translation
+### 4.1.1 Translation
 
 A change form ome location toanother is represented by atranslation matrix **T**.
 
@@ -230,7 +230,7 @@ The multiplication of a vector $\text{v}=(v_s, v_y, v_z, 0)$ won't affect it, be
 The inverse of a translation matrix is the translation matrix with the opposite signs on each of the translation components. 
 $$T^{-1}(t) = T(-t)$$
 
-### 4.1.2. Rotation
+### 4.1.2 Rotation
 
 A rotation transform rotates a vector by a given angle around a given axis.
 
@@ -282,7 +282,7 @@ Usage example: to rotate an object around a point $p$ we need to translate the o
 
 $$ X = T(P)R_z(\phi)T(-p) $$
 
-### 4.1.3. Scaling
+### 4.1.3 Scaling
 
 A scaling matrix $S(s) = S(s_x, s_y,s_x)$ scales entity with factors $s_x,\ s_y$ and $s_z$ along the x-, y-, and z-directions respectively.
 
@@ -328,7 +328,7 @@ If scalling should be performed in other directions, a compound transform is nee
 
 $$ X = FS(s)F^T $$
 
-### 4.1.4. Shearing
+### 4.1.4 Shearing
     z                        z
     ^                        ^
     |                        | s
@@ -342,7 +342,7 @@ Figure 4.3. The effect of shearing $H_{xz}(s)$
 
 Can be used to distort an entire scene to create psychedeliceffect or fuzzy reflections. 
 
-There are six basic shearing matrices: $ H_{xy}(s),\ H_{xz}(s),\ H_{yx}(s),\ H_{yz}(s),\ H_{zx}(s),\ H_{zy}(s) $. The first subscript
+There are six basic shearing matrices: $H_{xy}(s),\ H_{xz}(s),\ H_{yx}(s),\ H_{yz}(s),\ H_{zx}(s),\ H_{zy}(s)$. The first subscript
 denotes which coordinate is being changed by shear matrix, the second indicates the coordinate which does the shearing. For example:
 
 $$
@@ -355,16 +355,16 @@ $$
     \end{pmatrix}.  
 $$
 
-The effect of multiplying this matrix with a point $p$ yields a point: $ (p_x + sp_z, p_y, p_z)^T $. The inverse of shearing matrix
-is shearing in the opposite direction: $ H^{-1}_{ij}(s) = H_{ij}(-s) $. Shearing is volume preserving transformation, since $|H| = 1$.
+The effect of multiplying this matrix with a point $p$ yields a point: $(p_x + sp_z, p_y, p_z)^T$. The inverse of shearing matrix
+is shearing in the opposite direction: $H^{-1}_{ij}(s) = H_{ij}(-s)$. Shearing is volume preserving transformation, since $|H| = 1$.
 
-### 4.1.5. Concatenation of Transforms
+### 4.1.5 Concatenation of Transforms
 
 Matrix operations are noncommutativity, the order in which the matrices occur matters.
 
 $$ M_1M_2 \neq M_2M_1 $$
 
-### 4.1.6. Rigid-Body Transform
+### 4.1.6 Rigid-Body Transform
 
 Rigid-body transform preserves lengths, angles and handedness of the object. Ant rigid-body matrix $X$ can be written as the concatenation of translation and rotation:
 
@@ -378,7 +378,7 @@ $$
     \end{pmatrix}.
 $$
 
-The inverse of $X$ is computed as $ X^{-1} = (T(t)R)^{-1} = R^{-1}T(t)^{-1} = R^T T(-t) $. Thus, to compute it, the upper left 3 x 3
+The inverse of $X$ is computed as $X^{-1} = (T(t)R)^{-1} = R^{-1}T(t)^{-1} = R^T T(-t)$. Thus, to compute it, the upper left 3 x 3
 matrix of $R$ is transposed, the translation values of $T$ change sign and multiplication order becomes opposite.
 
 Another way to calculate the inverse of $X$ is to consider $R$ and X in the following notation:
@@ -388,7 +388,7 @@ $$
     \\
     X =
     \begin{pmatrix}
-        \Overrightarrow{\bar{R}} & t \\
+        \overrightarrow{\bar{R}} & t \\
         0^T & 1
     \end{pmatrix},
 $$
@@ -403,14 +403,14 @@ $$
     \end{pmatrix}.
 $$
 
-### 4.1.7. Normal Transform
+### 4.1.7 Normal Transform
 
 A single matrix can be used to transform objects and their geometry. The same matrix can also transform tangent vectors following
 along these objects. However it cannot always be used to transform the surface normal. The proper way isto use matrix's adjoint. 
 The adjoint is always guaranteed to exist. Normal is not guaranteed to be of unit lenth after being transformed, so typically
 needs to be normalized.
 
-> Adjoint matrix calculation starts by defining the subdeterminant (cofactor) $ d^M_{ij} $ of an n x n
+> Adjoint matrix calculation starts by defining the subdeterminant (cofactor) $d^M_{ij}$ of an n x n
 > matrix $M$ as the determinant that is obtained by deleting row $i$ and column $j$ and the taking the determinant of the resulting
 > (n-1) x (n-1) matrix.
 >
@@ -438,14 +438,14 @@ needs to be normalized.
 
 The traditional way to transform the normal is computing the transpose of the inverse. 
 
-### 4.1.8. Computation of Inverses
+### 4.1.8 Computation of Inverses
 
 Since inverse computation is expensive, the purpose of it should be taken into account when optimizing. For example,
 if the inverse is to be used for transforming vectors, then only 3 x 3 upper left part needs to be inverted.
 
-## 4.2. Special Matrix Transforms and Operations
+## 4.2 Special Matrix Transforms and Operations
 
-### 4.2.1. The Euler Transform
+### 4.2.1 The Euler Transform
 
 This transform is an intuitive way to construct a matrix to orient an object in a ceratin direction. The Euler transform is
 the multiplication of three matrices, denoted as $E$ and given by:
@@ -457,7 +457,7 @@ respective axes.
 
 This method has a lot of limitations and issues, so it is better using quaternions.
 
-### 4.2.2. Extracting Parameters from the Euler Transform
+### 4.2.2 Extracting Parameters from the Euler Transform
 
 It is useful to have a procedure that extracts the Euler parameters from an orthogonal matrix:
 
@@ -493,9 +493,8 @@ $$
     \end{align*}
 $$
 
-However, there is a special case when $ \cos p = 0 $, because then $ f_{01} = f_{11}
-= 0 $, and so the *atan2* function cannot be used. Having $ \cos p = 0 $ implies that
-$ \sin p = \pm 1 $ and so $F$ simplifies to:
+However, there is a special case when $\cos p = 0$, because then $f_{01} = f_{11} = 0$, and so the *atan2* function cannot be used.
+Having $\cos p = 0$ implies that $\sin p = \pm 1$ and so $F$ simplifies to:
 
 $$
     F =
@@ -506,5 +505,58 @@ $$
     \end{pmatrix}.
 $$
 
-### 4.2.3. Matrix Decomposition
+### 4.2.3 Matrix Decomposition
+
+The task of retrieving various transforms froma a concatenated matrix is called *matrix decomposition*. There are many reasons to
+retrieve a set if transformations:
+
+* Extracting just the scaling factors for an object.
+* Finding transforms needed for a particular system.
+* Determining whether a model has undergone only rigid-body transforms.
+* Interpolating between keyframes in an animation where only the matrix for the object is available.
+* Removing shears form rotation matrix.
+
+### 4.2.4 Rotation about an Arbitrary Axis
+
+To rotate $\alpha$ radians arond $r$ which is a normalized rotation axis, first find two more arbitrary axes of unit length that are
+mutually orthogonal with themselves and with $r$. The idea is to change bases from standard basis to this new one, then rotate and
+finally transform back to the standard basis.
+
+![Alt text](arbitrary_axis_rotation.png)
+
+The first step is to compute orthonormal axes of the basis. The first axis is $r$. The third axis $t$ will be the cross product
+of the first and second axes: $t = r \times s$. A numerically stable way to do this is ti find the smallest component of $r$, and
+set it to 0. Swap the two remaining components, and then negate the first of these.
+
+$$
+    \bar{s} =
+    \begin{cases}
+        (0, -r_z, -r_y), & \text{if } |r_x| < |r_y|\ \text{and } |r_x| < |r_z|, \\
+        (-r_z, 0, -r_x), & \text{if } |r_y| < |r_x|\ \text{and } |r_y| < |r_z|, \\
+        (-r_y, r_x, 0),  & \text{if } |r_z| < |r_x|\ \text{and } |r_z| < |r_y|,
+    \end{cases}
+$$
+$$
+    s = \bar{s} / \|\bar{s}\|, \\
+    t = r \times s.
+$$
+
+We use these three vectors as the rows in a matrix:
+
+$$ 
+    M =
+    \begin{pmatrix}
+        r^T \\
+        s^T \\
+        t^T
+    \end{pmatrix}.
+$$
+
+This matrix transforms the vector $r$ into the x-axis, $s$ into y-axis and $t$ into z-axis. So the fnal transform
+is then: $$ X = M^TR_x(\alpha)M. $$
+
+> Look at *arbitrary_axis_rotation* in *transforms.py*, there are also the second method.
+
+## 4.3 Quaterions
+
 
