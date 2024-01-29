@@ -356,7 +356,7 @@ $$
 $$
 
 The effect of multiplying this matrix with a point $p$ yields a point: $(p_x + sp_z, p_y, p_z)^T$. The inverse of shearing matrix
-is shearing in the opposite direction: $H^{-1}_{ij}(s) = H_{ij}(-s)$. Shearing is volume preserving transformation, since $|H| = 1$.
+is shearing in the opposite direction: $H_{ij}^{-1}(s) = H_{ij}(-s)$. Shearing is volume preserving transformation, since $|H| = 1$.
 
 ### 4.1.5 Concatenation of Transforms
 
@@ -553,7 +553,7 @@ $$
 $$
 
 This matrix transforms the vector $r$ into the x-axis, $s$ into y-axis and $t$ into z-axis. So the fnal transform
-is then: $$ X = M^TR_x(\alpha)M. $$
+is then: $$X = M^TR_x(\alpha)M.$$
 
 > Look at *arbitrary_axis_rotation* in *transforms.py*, there are also the second method.
 
