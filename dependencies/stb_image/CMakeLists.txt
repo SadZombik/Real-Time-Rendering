@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.5)
 project(STB_IMAGE)
 
 add_library(stb_image include/stb_image.h stb_image_impl.c)
