@@ -16,6 +16,9 @@
 #define S_WIDTH  640
 #define S_HEIGHT 480
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
 static GLFWwindow *window;
 
 struct Camera
@@ -71,6 +74,7 @@ namespace BasicTransforms {
 
         /* Make the window's context current */
         glfwMakeContextCurrent(window);
+        glfwSwapInterval(1);
 
         /* Initialize GLAD */
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -89,7 +93,11 @@ namespace BasicTransforms {
     }
 
     void TestTranslation() {
-        Shader shader("res/shaders/cube/vertex.glsl", "res/shaders/cube/fragment.glsl");
+        const std::string res_dir{TOSTRING(RES_DIR)};
+        Shader shader(
+            res_dir + "/shaders/vertex.glsl", 
+            res_dir + "/shaders/fragment.glsl"
+        );
 
         auto T = GetTranslationMatrix(0.5, 0.4, 0.3);
         
@@ -117,7 +125,7 @@ namespace BasicTransforms {
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             
 
-            
+
             /* Swap front and back buffers */
             glfwSwapBuffers(window);
 

@@ -35,8 +35,10 @@ add_subdirectory(dependencies/glfw)
 add_subdirectory(dependencies/stb_image)
 add_subdirectory(dependencies/glm)
 
+add_compile_definitions()
 file(GLOB SOURCE "src/*.cpp")
 
-add_executable(main ${SOURCE} ${IMGUI_SOURCE})
+add_executable(${TARGET} ${SOURCE} ${IMGUI_SOURCE})
+add_compile_definitions(RES_DIR=${CMAKE_CURRENT_SOURCE_DIR}/res)
 target_link_libraries(${TARGET} ${OPENGL_LIBRARIES} glad glfw stb_image glm)
 target_include_directories(${TARGET} PRIVATE ${IMGUI_DIRECTORY})
