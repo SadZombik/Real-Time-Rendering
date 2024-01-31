@@ -4,6 +4,3 @@
 [submodule "dependencies/glfw"]
 	path = dependencies/glfw
 	url = https://github.com/glfw/glfw.git
-[submodule "dependencies/glad"]
-	path = dependencies/glad
-	url = https://github.com/Dav1dde/glad.git
