@@ -35,22 +35,22 @@ add_subdirectory(dependencies/glfw)
 add_subdirectory(dependencies/stb_image)
 add_subdirectory(dependencies/glm)
 
-# file(GLOB SOURCE "src/*.cpp")
+file(GLOB SHARED_SOURCE "src/shared/*.cpp")
+
+add_library(framework ${SHARED_SOURCE} ${IMGUI_SOURCE})
+target_include_directories(framework PUBLIC ${IMGUI_DIRECTORY})
+target_link_libraries(framework ${OPENGL_LIBRARIES} glad glfw stb_image glm)
 
 add_executable(2Dtransform 
-	src/2Dtransform.cpp
-	src/shader.cpp
-	${IMGUI_SOURCE}
+	src/transforms/2Dtransform.cpp
 )
 
 add_executable(3Dtransform 
-	src/3Dtransform.cpp
-	src/shader.cpp
-	${IMGUI_SOURCE}
+	src/transforms/3Dtransform.cpp
 )
 
 add_compile_definitions(RES_DIR=${CMAKE_CURRENT_SOURCE_DIR}/res)
 foreach(target ${all_targets})
-	target_link_libraries(${target} ${OPENGL_LIBRARIES} glad glfw stb_image glm)
-	target_include_directories(${target} PRIVATE ${IMGUI_DIRECTORY})
+	target_include_directories(${target} PRIVATE src/shared)
+	target_link_libraries(${target} framework)
 endforeach()

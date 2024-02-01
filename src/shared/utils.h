@@ -27,4 +27,4 @@ constexpr void PrintMatrixRowMajor(const matrix_t& m) {
 }
 
 
-#endif // UTILS_H
+#endif // !UTILS_H
