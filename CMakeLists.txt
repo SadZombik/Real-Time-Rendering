@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(Rendering)
 
-set(TARGET main)
+set(all_targets 2Dtransform 3Dtransform)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -35,10 +35,22 @@ add_subdirectory(dependencies/glfw)
 add_subdirectory(dependencies/stb_image)
 add_subdirectory(dependencies/glm)
 
-add_compile_definitions()
-file(GLOB SOURCE "src/*.cpp")
+# file(GLOB SOURCE "src/*.cpp")
 
-add_executable(${TARGET} ${SOURCE} ${IMGUI_SOURCE})
+add_executable(2Dtransform 
+	src/2Dtransform.cpp
+	src/shader.cpp
+	${IMGUI_SOURCE}
+)
+
+add_executable(3Dtransform 
+	src/3Dtransform.cpp
+	src/shader.cpp
+	${IMGUI_SOURCE}
+)
+
 add_compile_definitions(RES_DIR=${CMAKE_CURRENT_SOURCE_DIR}/res)
-target_link_libraries(${TARGET} ${OPENGL_LIBRARIES} glad glfw stb_image glm)
-target_include_directories(${TARGET} PRIVATE ${IMGUI_DIRECTORY})
+foreach(target ${all_targets})
+	target_link_libraries(${target} ${OPENGL_LIBRARIES} glad glfw stb_image glm)
+	target_include_directories(${target} PRIVATE ${IMGUI_DIRECTORY})
+endforeach()

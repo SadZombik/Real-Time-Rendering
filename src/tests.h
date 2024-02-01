@@ -3,11 +3,9 @@
 
 #include <glm/glm.hpp>
 
-struct GLFWwindow;
-
 namespace BasicTransforms {
     int Init();
-    void TestTranslation();
+    void TestTransforms();
     void Clear();
 
 }; // namespace BasicTransforms
