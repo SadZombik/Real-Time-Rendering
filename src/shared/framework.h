@@ -17,7 +17,33 @@ inline std::string operator+(std::string_view sv, const char* cstr) {
 
 struct GLFWwindow;
 
-inline namespace Framework {
+namespace Colors {
+    // Converts RGBA color into 32 bit integer
+    constexpr uint32_t rgba_to_hex(int r, int g, int b, int a = 255) {
+        return (a << 24) | (r << 16) | (g << 8) | b;
+    }
+
+    constexpr glm::vec3 hex_to_rgba(uint32_t color) {
+        return glm::vec3 {
+            (color >> 24) & 0xFF,
+            (color >> 16) & 0xFF,
+            (color >> 8) & 0xFF,
+        };
+    }
+
+    constexpr auto RED      = rgba_to_hex(230, 41, 55);
+    constexpr auto ORANGE   = rgba_to_hex(255, 161, 0);
+    constexpr auto YELLOW   = rgba_to_hex(253, 249, 0);
+    constexpr auto GREEN    = rgba_to_hex(0, 228, 48);
+    constexpr auto SKYBLUE  = rgba_to_hex(102, 191, 255);
+    constexpr auto BLUE     = rgba_to_hex(0, 121, 241);
+    constexpr auto PURPLE   = rgba_to_hex(200, 122, 255);
+    constexpr auto GRAY     = rgba_to_hex(80, 80, 80);
+    constexpr auto BLACK    = rgba_to_hex(0, 0, 0);
+    constexpr auto WHITE    = rgba_to_hex(255, 255, 255);
+};
+
+namespace Framework {
     GLFWwindow* CreateWindow(int width, int height);
     
     void ProcessImGui(const std::function<void()>& ImGuiCode);
