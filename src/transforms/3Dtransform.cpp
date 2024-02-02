@@ -4,21 +4,149 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <stb_image.h>
 
-#include <framework.h>
+#include <Framework.h>
+#include <Shader.h>
+#include <OpenGlObjects.h>
+#include <CameraController.h>
 
+#include <imgui.h>
+#include <imgui_internal.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
 
 #define S_WIDTH 1280
 #define S_HEIGHT 720
 
+// Pyramid
+constexpr float vertices[] = {
+    // base
+        // first triangle
+         0.5f, -0.5f,  0.5f,  // top right
+         0.5f, -0.5f, -0.5f,  // bottom right
+        -0.5f, -0.5f,  0.5f,  // top left 
+
+        // second triangle
+         0.5f, -0.5f, -0.5f,  // bottom right
+        -0.5f, -0.5f, -0.5f,  // bottom left
+        -0.5f, -0.5f,  0.5f,  // top left
+
+    // walls
+        // right
+         0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.0f,  0.5f,  0.0f,
+
+        // left
+        -0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f, -0.5f,
+         0.0f,  0.5f,  0.0f
+
+};
+
+constexpr size_t NumVertices = sizeof(vertices) / sizeof(float) / 3;
+
+static void FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
+	glViewport(0, 0, width, height);
+}
+
 int main() {
-    auto* window = Framework::CreateWindow(S_WIDTH, S_HEIGHT);
+    GLFWwindow* window = Framework::CreateWindow(S_WIDTH, S_HEIGHT, "3D Transforms");
+    CameraController cam(S_WIDTH, S_HEIGHT);
+
+    glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
+
+    // glEnable(GL_DEPTH_TEST);
+
+    Shader shader(
+        res_dir + "/shaders/3d/vertex.glsl", 
+        res_dir + "/shaders/3d/fragment.glsl"
+    );
+    shader.Use();
+
+    VertexBufferObject VBO;
+    VertexArrayObject VAO;
+
+    VAO.Bind();
+    VBO.Bind();
+    VBO.SetData(sizeof(vertices), vertices);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    VAO.Bind();
+
+    float t_x = 0.0f;
+    float t_y = 0.0f;
+    float t_z = 0.0f;
+    float angle_x = 0.0f;
+    float angle_y = 0.0f;
+    float angle_z = 0.0f;
+    float scale = 1.0f;
+    glm::vec2 shear_x{};
+    glm::vec2 shear_y{};
+    glm::vec2 shear_z{};
+
+    float color[3] = { 128, 128, 128 };
 
     while (!glfwWindowShouldClose(window)) {
+        cam.Update();
+        cam.KeyboardCallback(window);
+
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
+        Framework::ImGuiCallback([&] {
+            ImGui::Begin("Settings");
+            ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
+            ImGui::Text("Translation");
+            ImGui::SliderFloat("Tx", &t_x, -1.0f, 1.0f);
+            ImGui::SliderFloat("Ty", &t_y, -1.0f, 1.0f);
+            ImGui::SliderFloat("Tz", &t_z, -1.0f, 1.0f);
 
+            ImGui::Text("Rotation");
+            ImGui::SliderFloat("Angle X", &angle_x, -IM_PI, IM_PI);
+            ImGui::SliderFloat("Angle Y", &angle_y, -IM_PI, IM_PI);
+            ImGui::SliderFloat("Angle Z", &angle_z, -IM_PI, IM_PI);
+
+            ImGui::Text("Uniform scaling");
+            ImGui::SliderFloat("Scale", &scale, -2.0f, 2.0f);
+            
+            ImGui::Text("Shearing");
+            ImGui::SliderFloat("shear_x.x", &shear_x.x, -1.0f, 1.0f);
+            ImGui::SliderFloat("shear_x.y", &shear_x.y, -1.0f, 1.0f);
+
+            ImGui::SliderFloat("shear_y.x", &shear_y.x, -1.0f, 1.0f);
+            ImGui::SliderFloat("shear_y.y", &shear_y.y, -1.0f, 1.0f);
+
+            ImGui::SliderFloat("shear_z.x", &shear_z.x, -1.0f, 1.0f);
+            ImGui::SliderFloat("shear_z.y", &shear_z.y, -1.0f, 1.0f);
+
+            ImGui::Text("Color");
+            ImGui::ColorPicker3("color", color);
+            ImGui::End();
+        });
+        
+        {
+            const auto T = Transforms::GetTranslationMatrix(t_x, t_y, t_z);
+            const auto R_x = Transforms::GetRotationMatrix(angle_x, glm::vec3{1.0f, 0.0f, 0.0f});
+            const auto R_y = Transforms::GetRotationMatrix(angle_y, glm::vec3{0.0f, 1.0f, 0.0f});
+            const auto R_z = Transforms::GetRotationMatrix(angle_z, glm::vec3{0.0f, 0.0f, 1.0f});
+            const auto S = Transforms::GetUniformScaleMatrix(scale);
+            const auto H = Transforms::GetShearMatrix(shear_x, shear_y, shear_z);
+
+            const auto model = T * R_x * R_y * R_z * H * S;
+
+            shader.Use();
+            shader.SetMat4("projection", cam.GetPerspectiveMatrix());
+            shader.SetMat4("view", cam.GetViewMatrix());
+            shader.SetMat4("model", model);
+            shader.SetVec3("in_color", color[0], color[1], color[2]);
+
+            VAO.Bind();
+            glDrawArrays(GL_TRIANGLES, 0, NumVertices);
+            VAO.Unbind();
+        }
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

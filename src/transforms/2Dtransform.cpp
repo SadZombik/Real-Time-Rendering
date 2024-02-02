@@ -3,8 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <shader.h>
-#include <framework.h>
+#include <Shader.h>
+#include <Framework.h>
 #include <OpenGlObjects.h>
 
 #include <imgui.h>
@@ -16,11 +16,11 @@
 #define S_HEIGHT 720
 
 int main() {
-    auto* window = Framework::CreateWindow(S_WIDTH, S_HEIGHT);
+    auto* window = Framework::CreateWindow(S_WIDTH, S_HEIGHT, "2D Transforms");
 
     Shader shader(
-        res_dir + "/shaders/vertex.glsl", 
-        res_dir + "/shaders/fragment.glsl"
+        res_dir + "/shaders/2d/vertex.glsl", 
+        res_dir + "/shaders/2d/fragment.glsl"
     );
 
     float vertices[] = {
@@ -59,21 +59,21 @@ int main() {
     VAO.Unbind();
     VBO.Unbind();
 
-    float t_x = 0.0;
-    float t_y = 0.0;
-    float angle = 0.0;
-    float scale = 1.0;
+    float t_x = 0.0f;
+    float t_y = 0.0f;
+    float angle = 0.0f;
+    float scale = 1.0f;
     glm::vec2 shear_x{};
     glm::vec2 shear_y{};
 
-    float color[] = {128, 128, 128};
+    float color[3] = { 128, 128, 128 };
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-        Framework::ProcessImGui([&] {
-            ImGui::Begin("Settings");  
+        Framework::ImGuiCallback([&] {
+            ImGui::Begin("Settings");
             ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             
             ImGui::Text("Translation");
@@ -103,18 +103,17 @@ int main() {
             const auto H = Transforms::GetShearMatrix(shear_x, shear_y, glm::vec2{});
 
             // TRS order
-            const auto model = T * R * S * H;
+            const auto model = T * R * H * S;
 
             shader.SetMat4("model", model);
             shader.SetVec3("in_color", color[0], color[1], color[2]);
 
             VAO.Bind();
-            glDrawArrays(GL_TRIANGLES, 0, 6);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
             // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-            glfwSwapBuffers(window);
-            glfwPollEvents();
         }
+        glfwSwapBuffers(window);
+        glfwPollEvents();
     }
 
     ImGui_ImplGlfw_Shutdown();

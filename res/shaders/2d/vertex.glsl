@@ -5,7 +5,6 @@ out vec3 out_color;
 uniform mat4 model;
 uniform vec3 in_color;
 
-
 void main()
 {
     gl_Position = model * vec4(pos, 1.0);

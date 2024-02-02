@@ -1,8 +1,7 @@
-#include "framework.h"
+#include "Framework.h"
 
 #include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "imgui.h"
@@ -13,13 +12,13 @@
 static GLFWwindow *window;
 
 namespace Framework {
-    GLFWwindow* CreateWindow(int width, int height) {
+    GLFWwindow* CreateWindow(int width, int height, const char* title) {
         if (!glfwInit()) {
             std::cerr << "GLFW init failed" << std::endl;
             exit(-1);
         }
 
-        window = glfwCreateWindow(width, height, "2D Transforms", NULL, NULL);
+        window = glfwCreateWindow(width, height, title, NULL, NULL);
         if (!window) {
             std::cerr << "Failed to create GLFW window" << std::endl;
             glfwTerminate();
@@ -36,6 +35,7 @@ namespace Framework {
 #ifndef NDEBUG
         std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 #endif
+        
         // Setup ImGui binding
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -46,14 +46,13 @@ namespace Framework {
         return window;
     }
 
-    void ProcessImGui(const std::function<void()>& ImGuiCode) {
+    void ImGuiCallback(const std::function<void()>& ImGuiCode) {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();      
+        ImGui::NewFrame();
 
         ImGuiCode();
 
-        ImGui::End();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
