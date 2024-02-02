@@ -53,20 +53,13 @@ constexpr float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f
 };
 
-
 constexpr size_t NumVertices = sizeof(vertices) / sizeof(float) / 5;
-
-static void FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
-	glViewport(0, 0, width, height);
-}
 
 int main() {
     GLFWwindow* window = Framework::CreateWindow(S_WIDTH, S_HEIGHT, "3D Transforms");
+    Framework::EnableDepthTest();
+
     CameraController cam(S_WIDTH, S_HEIGHT);
-
-    glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
-    
-
 
     Texture texture(res_dir + "/textures/3d/wood.png");
     texture.Bind(0);
@@ -167,7 +160,7 @@ int main() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    glfwTerminate();
 
+    Framework::Shutdown();
     return 0;
 }

@@ -20,7 +20,10 @@ inline std::string operator+(std::string_view sv, const char* cstr) {
 namespace Framework {
     GLFWwindow* CreateWindow(int width, int height, const char* title);
 
+    void EnableDepthTest();
     void ImGuiCallback(const std::function<void()>& ImGuiCode);
+
+    void Shutdown();
 }; // namespace Framework
 
 namespace Transforms {

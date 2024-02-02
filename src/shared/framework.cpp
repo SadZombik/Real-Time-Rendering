@@ -11,6 +11,10 @@
 
 static GLFWwindow *window;
 
+static void FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
+	glViewport(0, 0, width, height);
+}
+
 namespace Framework {
     GLFWwindow* CreateWindow(int width, int height, const char* title) {
         if (!glfwInit()) {
@@ -35,9 +39,8 @@ namespace Framework {
 #ifndef NDEBUG
         std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 #endif
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
-        
+        glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
+
         // Setup ImGui binding
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -46,6 +49,11 @@ namespace Framework {
         ImGui::StyleColorsDark();
 
         return window;
+    }
+
+    void EnableDepthTest() {
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
     }
 
     void ImGuiCallback(const std::function<void()>& ImGuiCode) {
@@ -57,6 +65,14 @@ namespace Framework {
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    }
+
+    void Shutdown() {
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+        glfwDestroyWindow(window);
+        glfwTerminate();
     }
 };
 

@@ -66,8 +66,9 @@ void CameraController::Update() {
 
 void CameraController::KeyboardCallback(GLFWwindow* window) 
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
+	}
 
 	const float cameraSpeed = 2.5f * m_DeltaTime; // íàñòðîéòå ïî âàøåìó óñìîòðåíèþ
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
