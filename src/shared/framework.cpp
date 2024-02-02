@@ -35,6 +35,8 @@ namespace Framework {
 #ifndef NDEBUG
         std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 #endif
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
         
         // Setup ImGui binding
         ImGui::CreateContext();

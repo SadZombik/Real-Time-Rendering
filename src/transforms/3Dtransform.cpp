@@ -21,29 +21,40 @@
 constexpr float vertices[] = {
     // base
         // first triangle
-         0.5f, -0.5f,  0.5f,  // top right
-         0.5f, -0.5f, -0.5f,  // bottom right
-        -0.5f, -0.5f,  0.5f,  // top left 
+        // position           // tex coords
+         0.5f, -0.5f,  0.5f,  1.0f, 1.0f, // top right
+        -0.5f, -0.5f,  0.5f,  0.0f, 1.0f, // top left 
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom right
 
         // second triangle
-         0.5f, -0.5f, -0.5f,  // bottom right
-        -0.5f, -0.5f, -0.5f,  // bottom left
-        -0.5f, -0.5f,  0.5f,  // top left
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f,  0.5f,  0.0f, 1.0f, // top left
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom left
 
     // walls
         // right
-         0.5f, -0.5f,  0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.0f,  0.5f,  0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 1.0f,
+         0.0f,  0.5f,  0.0f,  0.5f, 0.5f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
 
         // left
-        -0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f, -0.5f,
-         0.0f,  0.5f,  0.0f
+        -0.5f, -0.5f,  0.5f,  0.0f, 1.0f,
+         0.0f,  0.5f,  0.0f,  0.5f, 0.5f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
+        // near
+         0.5f, -0.5f,  0.5f,  1.0f, 1.0f,
+         0.0f,  0.5f,  0.0f,  0.5f, 0.5f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 1.0f,
+
+        // far
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.0f,  0.5f,  0.0f,  0.5f, 0.5f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f
 };
 
-constexpr size_t NumVertices = sizeof(vertices) / sizeof(float) / 3;
+
+constexpr size_t NumVertices = sizeof(vertices) / sizeof(float) / 5;
 
 static void FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -54,14 +65,18 @@ int main() {
     CameraController cam(S_WIDTH, S_HEIGHT);
 
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
+    
 
-    // glEnable(GL_DEPTH_TEST);
+
+    Texture texture(res_dir + "/textures/3d/wood.png");
+    texture.Bind(0);
 
     Shader shader(
         res_dir + "/shaders/3d/vertex.glsl", 
         res_dir + "/shaders/3d/fragment.glsl"
     );
     shader.Use();
+    shader.SetInt("pyramyd_texture", 0);
 
     VertexBufferObject VBO;
     VertexArrayObject VAO;
@@ -70,8 +85,10 @@ int main() {
     VBO.Bind();
     VBO.SetData(sizeof(vertices), vertices);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     VAO.Bind();
 
@@ -92,7 +109,7 @@ int main() {
         cam.Update();
         cam.KeyboardCallback(window);
 
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         Framework::ImGuiCallback([&] {
