@@ -64,6 +64,10 @@ void CameraController::Update() {
 	m_LastFrame = currentFrame;
 }
 
+void CameraController::SetRatio(float newRatio) {
+	m_Camera->aspect = newRatio;
+}
+
 void CameraController::KeyboardCallback(GLFWwindow* window) 
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {

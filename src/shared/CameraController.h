@@ -15,6 +15,7 @@ public:
 
     void Update();
     void KeyboardCallback(GLFWwindow* window);
+    void SetRatio(float newRatio);
 
 private:
     struct Camera;

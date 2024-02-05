@@ -55,11 +55,18 @@ constexpr float vertices[] = {
 
 constexpr size_t NumVertices = sizeof(vertices) / sizeof(float) / 5;
 
+void WindowSizeCallback(GLFWwindow* window, int width, int height) {
+    CameraController* cam = static_cast<CameraController*>(glfwGetWindowUserPointer(window));
+    cam->SetRatio((float)width / (float)height);
+}
+
 int main() {
     GLFWwindow* window = Framework::CreateWindow(S_WIDTH, S_HEIGHT, "3D Transforms");
     Framework::EnableDepthTest();
 
     CameraController cam(S_WIDTH, S_HEIGHT);
+    glfwSetWindowUserPointer(window, &cam);
+    glfwSetWindowSizeCallback(window, WindowSizeCallback);
 
     Texture texture(res_dir + "/textures/3d/wood.png");
     texture.Bind(0);
