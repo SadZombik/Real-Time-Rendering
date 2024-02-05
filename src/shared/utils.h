@@ -4,8 +4,11 @@
 #include <glm/glm.hpp>
 #include <iostream>
 
+namespace Utils {
+namespace Print {
+
 template <typename matrix_t>
-constexpr void PrintMatrix(const matrix_t& m) {
+constexpr void Matrix(const matrix_t& m) {
     constexpr size_t size = m.length();
     for (auto i = 0; i < size; ++i) {
         for (auto j = 0; j < size; ++j) {
@@ -16,7 +19,7 @@ constexpr void PrintMatrix(const matrix_t& m) {
 }
 
 template <typename matrix_t>
-constexpr void PrintMatrixRowMajor(const matrix_t& m) {
+constexpr void MatrixRowMajor(const matrix_t& m) {
     constexpr size_t size = m.length();
     for (auto i = 0; i < size; ++i) {
         for (auto j = 0; j < size; ++j) {
@@ -26,5 +29,15 @@ constexpr void PrintMatrixRowMajor(const matrix_t& m) {
     }
 }
 
-
+template <typename vec_t>
+constexpr void Vec(const vec_t& v) {
+    constexpr size_t size = v.length();
+    if constexpr (size == 4) {
+        std::cout << "x: " << v.x << " y: " << v.y << " z: " << v.z << " w: " << v.w << std::endl;
+    } else if constexpr (size == 3) {
+        std::cout << "x: " << v.x << " y: " << v.y << " z: " << v.z << std::endl;
+    }
+}
+}; // namespace Print
+}; // namespace Utils
 #endif // !UTILS_H

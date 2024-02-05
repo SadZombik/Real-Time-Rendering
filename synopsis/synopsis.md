@@ -557,6 +557,103 @@ is then: $$X = M^TR_x(\alpha)M.$$
 
 > Look at *arbitrary_axis_rotation* in *transforms.py*, there are also the second method.
 
-## 4.3 Quaterions
+## 4.3 Quaternions
 
+Quaternions can be used for stable and constant interpolation of orientations, something that cannot
+be done well with Euler angles.
+
+Quaternions have 4 parts, the first three values are closely related to axis of rotation, with the
+angle of rotation affecting all four parts. Each quaternion is represented by four real number, each
+associated with a different part.
+
+### 4.3.1 Mathematical Background
+
+A quaternion $\hat{q}$ can be defined in the following ways, all equivalent.
+
+$$
+    \begin{align*}
+        \hat{q} &= (q_v, q_w) = iq_x + jq_y + kq_z + q_w = q_v + q_w, \\
+        q_v &= iq_x + jq_y + kq_z = (q_x, q_y, q_z), \\
+        i^2 &= j^2 = k^2 = -1,\ jk = -kj = i,\ ki = -ik = j,\ ij = -ji = k.
+    \end{align*}
+$$
+
+The variable $q_w$ is called the real part of a quaternion, $\hat{q}$. The imaginary part is $q_v$,
+and $i$, $j$ and $k$ are called imaginary units.
+
+For the imaginary part, $q_v$, we can use all the normal vector operations, such as addition, scaling,
+dot product, cross product and more. Using the definition of the quaternion, the multiplication
+operation between two quaternions, $\hat{q}$ and $\hat{r}$, is derived as shown below. Note that the
+multiplication of the imaginary units is noncommutative.
+
+**Multiplication** :
+
+$$
+    \begin{align*}
+        \hat{q}\hat{r} =\ &(iq_x + jq_y + kq_z + q_w)(ir_x + jr_y + kr_z + r_w) \\
+                       =\ &i(q_y r_z - q_z r_y + r_w q_x + q_w r_x) \\
+                        &+ j(q_z r_x - q_x r_z + r_w q_y + q_w r_y) \\
+                        &+ k(q_x r_y - q_y r_x + r_w q_z + q_w r_z) \\
+                        &+ q_w r_w - q_x r_x - q_y r_y - q_z r_z = \\
+                       = &(q_v \times r_v + r_w q_v  + q_w r_v, q_w r_w - q_b \cdot r_v)
+
+    \end{align*}
+$$
+
+**Addition** : $\hat{q} + \hat{r} = (q_v, q_w) + (r_v, r_w) = (q_v + r_v, q_w + r_w).$
+
+**Conjugate** : $\hat{q}^* = (q_v, q_w)^* = (-q_v, q_w).$
+
+**Norm** : $n(\hat{q}) = \sqrt{\hat{q}\hat{q}^*} = \sqrt{\hat{q}^*\hat{q}} = \sqrt{q_v \cdot q_v + q_w^2} = \sqrt{q_x^2 + q_y^2 + q_z^2 + q_w^2}.$
+
+**Identity** : $\hat{i} = (0, 1).$
+
+**Inverse** : $\hat{q}^{-1} = \dfrac{1}{n(\hat{q}^2)} \hat{q}^*.$
+
+**Conjugate rules** :
+$$
+    \begin{align*}
+        (\hat{q}^*)^* &= \hat{q}, \\
+        (\hat{q} + \hat{r})^* &= \hat{q}^* + \hat{r}^*, \\
+        (\hat{q}\hat{r})^* &= \hat{r}^*\hat{q}^*.
+    \end{align*}
+$$
+
+**Norm rules** :
+$$
+    \begin{align*}
+        n(\hat{q}^*) &= n(\hat{q}), \\
+        n(\hat{q}\hat{r}) &= n(\hat{q}) n(\hat{r}).
+    \end{align*}
+$$
+
+**Laws of multiplication** :
+
+**Linearity**:
+$$
+    \begin{align*}
+        \hat{p}(s\hat{q} + t\hat{r}) &= s\hat{p}\hat{q} + t\hat{p}\hat{r}, \\
+        (s\hat{p} + t\hat{q})\hat{r} &= s\hat{p}\hat{r} + t\hat{q}\hat{r}. \\
+    \end{align*}
+$$
+
+**Associativity** : $$\hat{p}(\hat{q}\hat{r}) = (\hat{p}\hat{q})\hat{r}.$$
+
+A unit quaternion, $\hat{q} = (q_v, q_w)$, is such that $n(\hat{q}) = 1$. From this it follows that $\hat{q}$ may be written as
+
+$$\hat{q} = (\sin \phi u_q, \cos \phi) = \sin \phi u_q + \cos \phi,$$
+
+for some three-dimensional vector $u_q$, such that $||u_q|| = 1$.
+
+Unit quaternions are perfectly suited for creating rotations and orientations in a most efficient way. But before that,
+some extra operations will be introduced for unit quaternions.
+
+For complex numbers, a two-dimensional unit vector can be written as $\cos \phi + i\sin \phi = e^{i\phi}$. The equivalent for
+quaternion is $$\hat{q} = \sin \phi u_q + \cos \phi = e^{\phi u_q}.$$
+
+**Logarithm** : $\log(\hat{q}) = \log(e^{\phi u_q}) = \phi u_q$,
+
+**Power** : $\hat{q}^t = (\sin \phi u_q + \cos \phi)^t = e^{\phi t u_q} = \sin (\phi t)u_q + \cos (\phi t)$.
+
+### 4.3.2 Quaternion Transforms
 

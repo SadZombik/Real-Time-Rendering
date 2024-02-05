@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(Rendering)
 
-set(all_targets 2Dtransform 3Dtransform)
+set(all_targets 2Dtransform 3Dtransform quaternions_basics)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -47,6 +47,10 @@ add_executable(2Dtransform
 
 add_executable(3Dtransform 
 	src/transforms/3Dtransform.cpp
+)
+
+add_executable(quaternions_basics
+	src/quaternions/basics.cpp
 )
 
 add_compile_definitions(RES_DIR=${CMAKE_CURRENT_SOURCE_DIR}/res)
