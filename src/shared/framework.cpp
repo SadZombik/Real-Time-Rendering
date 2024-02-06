@@ -80,23 +80,24 @@ namespace Transforms {
     // Identity matrix
     static constexpr glm::mat4 I(1.0);
 
-    glm::mat4 GetTranslationMatrix(float t_x, float t_y, float t_z) {
+    glm::mat4 GetTranslationMatrix(const float t_x, const float t_y, const float t_z) {
         return glm::translate(I, glm::vec3{t_x, t_y, t_z});
     }
 
-    glm::mat4 GetRotationMatrix(float angle, glm::vec3& axis) {
-        return glm::rotate(I, angle, axis);
+    glm::mat4 GetRotationMatrix(const float angle, glm::vec3& axis) {
+        const auto angle_rad = glm::radians(angle);
+        return glm::rotate(I, angle_rad, axis);
     }
 
-    glm::mat4 GetScaleMatrix(float s_x, float s_y, float s_z) {
+    glm::mat4 GetScaleMatrix(const float s_x, const float s_y, const float s_z) {
         return glm::scale(I, glm::vec3{s_x, s_y, s_z});
     }
 
-    glm::mat4 GetUniformScaleMatrix(float s) {
+    glm::mat4 GetUniformScaleMatrix(const float s) {
         return glm::scale(I, glm::vec3{s, s, s});
     }
 
-    glm::mat4 GetShearMatrix(glm::vec2& l_x, glm::vec2& l_y, glm::vec2& l_z) {
+    glm::mat4 GetShearMatrix(const glm::vec2& l_x, const glm::vec2& l_y, const glm::vec2& l_z) {
         return glm::shear(I, glm::vec3{}, l_x, l_y, l_z);
     }
 };

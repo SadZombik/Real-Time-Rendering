@@ -28,11 +28,11 @@ namespace Framework {
 
 namespace Transforms {
     struct TransformParameters;
-    glm::mat4 GetTranslationMatrix(float t_x, float t_y, float t_z);
-    glm::mat4 GetRotationMatrix(float angle, glm::vec3& axis);
-    glm::mat4 GetScaleMatrix(float s_x, float s_y, float s_z);
-    glm::mat4 GetUniformScaleMatrix(float s);
-    glm::mat4 GetShearMatrix(glm::vec2& l_x, glm::vec2& l_y, glm::vec2& l_z);
+    glm::mat4 GetTranslationMatrix(const float t_x, const float t_y, const float t_z);
+    glm::mat4 GetRotationMatrix(const float angle, glm::vec3& axis);
+    glm::mat4 GetScaleMatrix(const float s_x, const float s_y, const float s_z);
+    glm::mat4 GetUniformScaleMatrix(const float s);
+    glm::mat4 GetShearMatrix(const glm::vec2& l_x, const glm::vec2& l_y, const glm::vec2& l_z);
 }; // namespace Transforms
 
 #endif // !FRAMEWORK_H
