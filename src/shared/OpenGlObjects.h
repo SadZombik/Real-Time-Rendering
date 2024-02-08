@@ -17,8 +17,8 @@ public:
 	OpenGLObject() : ID(0) {}
     virtual ~OpenGLObject() {}
 	virtual GLuint GetID() const { return ID; }
-	virtual void Bind() = 0;
-	virtual void Unbind() = 0;
+	virtual void Bind() const = 0;
+	virtual void Unbind() const = 0;
 
 protected:
 	GLuint ID;
@@ -33,8 +33,8 @@ public:
         glDeleteVertexArrays(1, &ID);
     }
 
-	void Bind()	override { glBindVertexArray(ID); }
-	void Unbind() override { glBindVertexArray(0); }
+	void Bind()	const override { glBindVertexArray(ID); }
+	void Unbind() const override { glBindVertexArray(0); }
 };
 
 class VertexBufferObject : public OpenGLObject
@@ -46,8 +46,8 @@ public:
         glDeleteBuffers(1, &ID);
     }
 
-	void Bind()	override { glBindBuffer(GL_ARRAY_BUFFER, ID); }
-	void Unbind() override { glBindBuffer(GL_ARRAY_BUFFER, 0); }
+	void Bind()	const override { glBindBuffer(GL_ARRAY_BUFFER, ID); }
+	void Unbind() const override { glBindBuffer(GL_ARRAY_BUFFER, 0); }
 	void SetData(size_t size, const void* data) {
 		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 	}
@@ -59,8 +59,8 @@ public:
 	ElementsBufferObject() { glGenBuffers(1, &ID); }
 	~ElementsBufferObject() { Unbind(); }
 
-	void Bind() override { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID); }
-	void Unbind() override { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
+	void Bind() const override { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID); }
+	void Unbind() const override { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
 	void SetData(size_t size, const void* data) {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 	}
@@ -76,8 +76,8 @@ public:
     }
     ~RenderBufferObject() {}
 
-    void Bind() override {}
-    void Unbind() override {}
+    void Bind() const override {}
+    void Unbind() const override {}
 };
 
 class TextureColorBuffer : public OpenGLObject
@@ -89,8 +89,8 @@ public:
         glDeleteTextures(1, &ID);
     }
 
-    void Bind() override { glBindTexture(GL_TEXTURE_2D, ID); }
-    void Unbind() override { glBindTexture(GL_TEXTURE_2D, 0); }
+    void Bind() const override { glBindTexture(GL_TEXTURE_2D, ID); }
+    void Unbind() const override { glBindTexture(GL_TEXTURE_2D, 0); }
 };
 
 class FrameBufferObject : public OpenGLObject
@@ -110,11 +110,11 @@ public:
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo.GetID()); 
     }
 
-    void Bind() override { 
+    void Bind() const override { 
         glBindFramebuffer(GL_FRAMEBUFFER, ID); 
     }
 
-    void Unbind() override {
+    void Unbind() const override {
         try {
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
                 throw("Framebuffer is not complete!");
@@ -196,16 +196,16 @@ public:
         glDeleteTextures(1, &ID);
     }
 
-    void Bind() override {
+    void Bind() const override {
         Bind(0);
     }
 
-    void Bind(GLuint slot) {
+    void Bind(GLuint slot) const {
         glActiveTexture(GL_TEXTURE0 + slot);
         glBindTexture(GL_TEXTURE_2D, ID);
     }
 
-    void Unbind() {
+    void Unbind() const override {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 

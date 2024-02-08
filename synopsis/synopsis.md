@@ -657,3 +657,95 @@ quaternion is $$\hat{q} = \sin \phi u_q + \cos \phi = e^{\phi u_q}.$$
 
 ### 4.3.2 Quaternion Transforms
 
+Unit quaternions can represent any three-dimensional rotation extremely compact and simple.
+
+If we put the four coordinates of a point orvector $p = (p_x\ p_y\ p_z\ p_w)^T$ into the components of a
+quaternion $\hat{p}$, and assume that we have a unit quaternion $\hat{q} = (\sin \phi u_q, \cos \phi)$.
+Then $$\hat{q}\hat{p}\hat{q}^{-1}$$ rotates $\hat{p}$ (and thus the point $p$) around the axis $u_q$ by an 
+angle $2\phi$.
+
+*Matrix Conversion* <br>
+A quaternion $\hat{q}$ can be converted into a matrix $M^q$:
+
+$$
+    M^q = 
+    \begin{pmatrix}
+        1 - s(q_y^2 + q_z^2) & s(q_x q_y - q_w q_z) & s(q_x q_z + q_w q_y) & 0 \\
+        s(q_x q_y + q_w q_z) & 1 - s(q_x^2 + q_z^2) & s(q_y q_z - q_w q_x) & 0 \\
+        s(q_x q_z - q_w q_y) & s(q_y q_z + q_w q_x) & 1 - s(q_x^2 + q_y^2) & 0 \\ 
+        0 & 0 & 0 & 1
+    \end{pmatrix}.
+$$
+
+Here, the scalar is $s = 2/n(\hat{q})$. For unit quaternions $s = 2$.
+
+*Spherical Linear Interpolation* <br>
+Spherical linear interpolation is an operation that computes an interpolated quaternion. This is useful for
+animating objects, but not the camera, as the camera's up vector can become tilted during interpolation.
+
+The algebraic form $$\hat{s}(\hat{q},\hat{r},\hat{t}) = (\hat{r}\hat{q}^{-1})^t \hat{q}$$
+Software implementation from 
+$$
+    \hat{s}(\hat{q},\hat{r},\hat{t}) = \text{slerp(q, r, t)} = 
+        \frac{\sin(\phi(1-t))}{\sin \phi}\hat{q} + \frac{\sin(\phi t)}{\sin \phi}\hat{r}
+$$ 
+
+To compute $\phi$ which is needed in this equation, the following can be used: 
+$\cos \phi = q_x r_x + q_y r_y + q_z r_z + q_w r_w$. For $t \in [0, 1]$, the slerp function computes unique interpolated 
+quaternions that together constitute the shortest arc on a four-dimensional unit sphere from $\hat{q}(t = 0)$ to
+$\hat{r}(t = 1)$ if $\hat{q}$ and $\hat{r}$ are not opposite. The arc is located on the circle that is formed from the
+intersection between the plane given by $\hat{q}, \hat{r}$, the origin and the four-dimensional unit sphere. The computed
+rotation quaternion rotates around a fixed axis at constant speed. A curve that has constant speed and thus zero 
+acceleration, is called a *geodesic curve*.
+
+Computing a slerp directly is expensive operation involving calling trigonometric functions. A better way to interpolate is
+to use some sort of spline, introducing quaternions $\hat{a}_i$ and $\hat{a}_{i+1}$ between $\hat{q}_i$ and $\hat{q}_{i+1}$.
+Spherical cubic interpolation can be defined within the set of these quaternions, they are computed as
+
+$$
+    \hat{a}_i = \hat{q}_i \exp[-\frac{\log(\hat{q}_i^{-1}\hat{q}_{i-1} + \hat{q}_i^{-1}\hat{q}_{i+1})}{4}].
+$$
+
+The $\hat{q}_i$ and $\hat{a}_i$ will be used to spherically interpolate the quaternions using a smooth cubic spline
+
+$$
+    \text{squad}(\hat{q}_i, \hat{q}_{i+1}, \hat{a}_i, \hat{a}_{i+1}, t) = \\
+        \text{slerp}(\text{slerp}(\hat{q}_i, \hat{q}_{i+1}, t), \text{slerp}(\hat{a}_i, \hat{a}_{i+1}, t), 2t(1-t)).
+$$
+
+The squad function is constructed from repeated spherical interpolation using slerp. The interpolation will pass through
+the initial orientations $\hat{q}_i, i \in [0, ..., n-1]$, but not through $\hat{a}_i$ - these are used to indicate the
+tangent orientations at the initial orientations.
+
+*Rotation from One Vector to Another* <br>
+A common operation is transforming from one direction $s$ to another direction $t$ via the shortest path possible. First,
+normalize $s$ and $t$. Then compute the unit rotation axis, called $u$, $u = (s \times t)/||s \times t||$. Next,
+$e = s \cdot t = \cos(2\phi)$ and $||s \times t|| = \sin(2\phi)$, where $2\phi$ is the angle between $s$ and $t$. The
+quaternion $\hat{q} = (\sin \phi u, \cos \phi)$ represents rotation between $s$ and $t$ or 
+
+$$
+    \hat{q} = (q_v, q_w) = (\frac{1}{\sqrt{2(1+e)}}(s \times t), \frac{\sqrt{2(1+e)}}{2}).
+$$
+
+Sometimes we need the matrix representation of this rotation
+
+$$
+    R(s, t) =
+    \begin{pmatrix}
+        e + h v_x^2     & h v_x v_y - v_z & h v_x v_z + v_y & 0 \\
+        h v_x v_y + v_z & e + h v_y^2     & h v_y v_z - v_x & 0 \\
+        h v_x v_z - v_y & h v_y v_z + v_x & e + h v_z^2     & 0 \\
+        0 & 0 & 0 & 1
+    \end{pmatrix}
+$$
+Where 
+$$
+    \begin{align*}
+    v &= s \times t \\
+    e &= \cos(2\phi) = s \cdot t \\
+    h &= \frac{1-cos(2\phi)}{\sin^2(2\phi)} = \frac{1 - e}{v \cdot v} = \frac{1}{1 + e}.
+    \end{align*}
+$$
+
+## 4.4 Vertex Blending
+

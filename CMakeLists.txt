@@ -35,7 +35,10 @@ add_subdirectory(dependencies/glfw)
 add_subdirectory(dependencies/stb_image)
 add_subdirectory(dependencies/glm)
 
-file(GLOB SHARED_SOURCE "src/shared/*.cpp")
+file(GLOB SHARED_SOURCE 
+	"src/shared/shapes/*.cpp",
+	"src/shared/*.cpp"
+)
 
 add_library(framework ${SHARED_SOURCE} ${IMGUI_SOURCE})
 target_include_directories(framework PUBLIC ${IMGUI_DIRECTORY})

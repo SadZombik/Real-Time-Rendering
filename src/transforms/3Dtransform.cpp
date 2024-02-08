@@ -14,6 +14,8 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
+#include <shapes/Pyramid.h>
+
 #define S_WIDTH 1280
 #define S_HEIGHT 720
 
@@ -68,29 +70,7 @@ int main() {
     glfwSetWindowUserPointer(window, &cam);
     glfwSetWindowSizeCallback(window, WindowSizeCallback);
 
-    Texture texture(res_dir + "/textures/3d/wood.png");
-    texture.Bind(0);
-
-    Shader shader(
-        res_dir + "/shaders/3d/vertex.glsl", 
-        res_dir + "/shaders/3d/fragment.glsl"
-    );
-    shader.Use();
-    shader.SetInt("pyramyd_texture", 0);
-
-    VertexBufferObject VBO;
-    VertexArrayObject VAO;
-
-    VAO.Bind();
-    VBO.Bind();
-    VBO.SetData(sizeof(vertices), vertices);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    VAO.Bind();
+    Pyramid pyramid;
 
     float t_x = 0.0f;
     float t_y = 0.0f;
@@ -103,7 +83,10 @@ int main() {
     glm::vec2 shear_y{};
     glm::vec2 shear_z{};
 
+    bool coloring = true;
     float color[3] = { 128, 128, 128 };
+
+    constexpr float pi_deg = glm::degrees(IM_PI);
 
     while (!glfwWindowShouldClose(window)) {
         cam.Update();
@@ -122,13 +105,13 @@ int main() {
             ImGui::SliderFloat("Tz", &t_z, -1.0f, 1.0f);
 
             ImGui::Text("Rotation");
-            ImGui::SliderFloat("Angle X", &angle_x, -IM_PI, IM_PI);
-            ImGui::SliderFloat("Angle Y", &angle_y, -IM_PI, IM_PI);
-            ImGui::SliderFloat("Angle Z", &angle_z, -IM_PI, IM_PI);
+            ImGui::SliderFloat("Angle X", &angle_x, -pi_deg, pi_deg);
+            ImGui::SliderFloat("Angle Y", &angle_y, -pi_deg, pi_deg);
+            ImGui::SliderFloat("Angle Z", &angle_z, -pi_deg, pi_deg);
 
             ImGui::Text("Uniform scaling");
             ImGui::SliderFloat("Scale", &scale, -2.0f, 2.0f);
-            
+
             ImGui::Text("Shearing");
             ImGui::SliderFloat("shear_x.x", &shear_x.x, -1.0f, 1.0f);
             ImGui::SliderFloat("shear_x.y", &shear_x.y, -1.0f, 1.0f);
@@ -139,11 +122,30 @@ int main() {
             ImGui::SliderFloat("shear_z.x", &shear_z.x, -1.0f, 1.0f);
             ImGui::SliderFloat("shear_z.y", &shear_z.y, -1.0f, 1.0f);
 
-            ImGui::Text("Color");
-            ImGui::ColorPicker3("color", color);
+            if (ImGui::Button(coloring ? "Disable Coloring" : "Enable Coloring")) {
+                coloring = !coloring;
+
+                if (coloring) {
+                    pyramid.SetShaders(
+                        res_dir + "/shaders/3d/vertex.glsl",
+                        res_dir + "/shaders/3d/fragment.glsl"
+                    );
+                } else {
+                    pyramid.SetShaders(
+                        res_dir + "/shaders/3d/vertex_no_color.glsl",
+                        res_dir + "/shaders/3d/fragment_no_color.glsl"
+                    );
+                }
+            }
+
+            if (coloring) {
+                ImGui::Text("Color");
+                ImGui::ColorPicker3("color", color);
+            }
+
             ImGui::End();
         });
-        
+
         {
             const auto T = Transforms::GetTranslationMatrix(t_x, t_y, t_z);
             const auto R_x = Transforms::GetRotationMatrix(angle_x, glm::vec3{1.0f, 0.0f, 0.0f});
@@ -154,15 +156,9 @@ int main() {
 
             const auto model = T * R_x * R_y * R_z * H * S;
 
-            shader.Use();
-            shader.SetMat4("projection", cam.GetPerspectiveMatrix());
-            shader.SetMat4("view", cam.GetViewMatrix());
-            shader.SetMat4("model", model);
-            shader.SetVec3("in_color", color[0], color[1], color[2]);
-
-            VAO.Bind();
-            glDrawArrays(GL_TRIANGLES, 0, NumVertices);
-            VAO.Unbind();
+            pyramid.SetModelMatrix(model);
+            pyramid.SetColor(color);
+            pyramid.Update(cam);
         }
         glfwSwapBuffers(window);
         glfwPollEvents();
