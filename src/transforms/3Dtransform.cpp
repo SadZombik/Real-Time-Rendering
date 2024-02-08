@@ -1,8 +1,5 @@
-#include <glad/glad.h>
-#include <glfw/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <stb_image.h>
 
 #include <Framework.h>
 #include <Shader.h>
@@ -18,44 +15,6 @@
 
 #define S_WIDTH 1280
 #define S_HEIGHT 720
-
-// Pyramid
-constexpr float vertices[] = {
-    // base
-        // first triangle
-        // position           // tex coords
-         0.5f, -0.5f,  0.5f,  1.0f, 1.0f, // top right
-        -0.5f, -0.5f,  0.5f,  0.0f, 1.0f, // top left 
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom right
-
-        // second triangle
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f,  0.5f,  0.0f, 1.0f, // top left
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom left
-
-    // walls
-        // right
-         0.5f, -0.5f,  0.5f,  1.0f, 1.0f,
-         0.0f,  0.5f,  0.0f,  0.5f, 0.5f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-
-        // left
-        -0.5f, -0.5f,  0.5f,  0.0f, 1.0f,
-         0.0f,  0.5f,  0.0f,  0.5f, 0.5f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-        // near
-         0.5f, -0.5f,  0.5f,  1.0f, 1.0f,
-         0.0f,  0.5f,  0.0f,  0.5f, 0.5f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 1.0f,
-
-        // far
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.0f,  0.5f,  0.0f,  0.5f, 0.5f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f
-};
-
-constexpr size_t NumVertices = sizeof(vertices) / sizeof(float) / 5;
 
 void WindowSizeCallback(GLFWwindow* window, int width, int height) {
     CameraController* cam = static_cast<CameraController*>(glfwGetWindowUserPointer(window));
