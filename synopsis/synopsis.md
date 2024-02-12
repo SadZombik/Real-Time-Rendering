@@ -522,7 +522,9 @@ To rotate $\alpha$ radians arond $r$ which is a normalized rotation axis, first 
 mutually orthogonal with themselves and with $r$. The idea is to change bases from standard basis to this new one, then rotate and
 finally transform back to the standard basis.
 
-![Alt text](arbitrary_axis_rotation.png)
+<p align="center">
+  <img src="arbitrary_axis_rotation.png">
+</p>
 
 The first step is to compute orthonormal axes of the basis. The first axis is $r$. The third axis $t$ will be the cross product
 of the first and second axes: $t = r \times s$. A numerically stable way to do this is ti find the smallest component of $r$, and
@@ -749,3 +751,16 @@ $$
 
 ## 4.4 Vertex Blending
 
+*Vertex blending* has several other names, such as *skinning*, *enveloping* and 
+*skeleton-subspace deformation*. The main idea is defining bones and having skin react to changes.
+In its simpliest form, two objects are animated separately, but at the joint, the two part are
+connected through an elastic "skin". This elastic part will have one set of vertices that are
+transformed by first object's matrix and another set by second. This basic technique is sometimes
+called stitching.
+
+<p align="center">
+  <img src="vertex_blending.png">
+</p>
+
+A single vertex can be transformed by several different matrices, with the resulting locations weighted
+and blended together.

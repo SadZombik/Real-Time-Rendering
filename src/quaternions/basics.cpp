@@ -15,9 +15,6 @@
 
 #include <array>
 
-#define S_WIDTH 1280
-#define S_HEIGHT 720
-
 void WindowSizeCallback(GLFWwindow* window, int width, int height) {
     CameraController* cam = static_cast<CameraController*>(glfwGetWindowUserPointer(window));
     cam->SetRatio((float)width / (float)height);
@@ -76,10 +73,10 @@ private:
 };
 
 int main() {
-    auto* window = Framework::CreateWindow(S_WIDTH, S_HEIGHT, "Quaternoins Basics");
+    auto* window = Framework::CreateWindow("Quaternoins Basics");
     Framework::EnableDepthTest();
 
-    CameraController cam(S_WIDTH, S_HEIGHT);
+    CameraController cam(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     glfwSetWindowUserPointer(window, &cam);
     glfwSetWindowSizeCallback(window, WindowSizeCallback);
 

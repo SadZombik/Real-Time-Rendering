@@ -12,11 +12,8 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
-#define S_WIDTH  1280
-#define S_HEIGHT 720
-
 int main() {
-    auto* window = Framework::CreateWindow(S_WIDTH, S_HEIGHT, "2D Transforms");
+    auto* window = Framework::CreateWindow("2D Transforms");
 
     Shader shader(
         res_dir + "/shaders/2d/vertex.glsl", 

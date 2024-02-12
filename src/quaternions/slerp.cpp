@@ -7,14 +7,11 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#define S_WIDTH 1280
-#define S_HEIGHT 720
-
 int main() {
-    auto* window = Framework::CreateWindow(S_WIDTH, S_HEIGHT, "Spherical Linear Interpolation");
+    auto* window = Framework::CreateWindow("Spherical Linear Interpolation");
     Framework::EnableDepthTest();
 
-    CameraController cam(S_WIDTH, S_HEIGHT);
+    CameraController cam(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     
     const auto q1 = glm::angleAxis(glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     const auto q2 = glm::angleAxis(glm::radians(89.0f), glm::vec3(1.0f, 0.0f, 0.0f));

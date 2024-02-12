@@ -13,19 +13,16 @@
 
 #include <shapes/Pyramid.h>
 
-#define S_WIDTH 1280
-#define S_HEIGHT 720
-
 void WindowSizeCallback(GLFWwindow* window, int width, int height) {
     CameraController* cam = static_cast<CameraController*>(glfwGetWindowUserPointer(window));
     cam->SetRatio((float)width / (float)height);
 }
 
 int main() {
-    GLFWwindow* window = Framework::CreateWindow(S_WIDTH, S_HEIGHT, "3D Transforms");
+    GLFWwindow* window = Framework::CreateWindow("3D Transforms");
     Framework::EnableDepthTest();
 
-    CameraController cam(S_WIDTH, S_HEIGHT);
+    CameraController cam(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     glfwSetWindowUserPointer(window, &cam);
     glfwSetWindowSizeCallback(window, WindowSizeCallback);
 

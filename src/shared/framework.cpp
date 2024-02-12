@@ -18,7 +18,7 @@ static void FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
 }
 
 namespace Framework {
-    GLFWwindow* CreateWindow(int width, int height, const char* title) {
+    GLFWwindow* CreateWindow(const char* title, int width, int height) {
         if (!glfwInit()) {
             std::cerr << "GLFW init failed" << std::endl;
             exit(-1);

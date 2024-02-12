@@ -10,6 +10,9 @@
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 
+#define DEFAULT_WIDTH 1280
+#define DEFAULT_HEIGHT 720
+
 constexpr std::string_view res_dir{TOSTRING(RES_DIR)};
 
 // For specifying paths
@@ -18,7 +21,7 @@ inline std::string operator+(std::string_view sv, const char* cstr) {
 }
 
 namespace Framework {
-    GLFWwindow* CreateWindow(int width, int height, const char* title);
+    GLFWwindow* CreateWindow(const char* title, int width = DEFAULT_WIDTH, int height = DEFAULT_HEIGHT);
 
     void EnableDepthTest();
     void DisableDepthTest();
