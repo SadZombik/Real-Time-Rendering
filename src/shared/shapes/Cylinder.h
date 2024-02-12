@@ -1,14 +1,14 @@
-#ifndef PYRAMID_H
-#define PYRAMID_H
+#ifndef CYLINDER_H
+#define CYLINDER_H
 
 #include "../OpenGlObjects.h"
 #include "../Shader.h"
 #include "../CameraController.h"
 
-class Pyramid {
+class Cylinder {
 public:
-    Pyramid();
-    
+    Cylinder();
+
     void Update(const CameraController& cam);
 
     void SetShaders(const std::string& vertexPath, const std::string& fragmentPath);
@@ -20,8 +20,7 @@ private:
     Shader shader;
     VertexBufferObject VBO;
     VertexArrayObject VAO;
-    Texture texture;
     float color[3];
 };
 
-#endif // !PYRAMID_H
+#endif // !CYLINDER_H

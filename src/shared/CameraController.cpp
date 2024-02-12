@@ -14,7 +14,6 @@ struct CameraController::Camera {
 	float fov;
 	bool  firstMouse;
     float aspect;
-
 };
 
 CameraController::CameraController(int width, int height) {
@@ -62,27 +61,56 @@ void CameraController::Update() {
 	float currentFrame = (float)glfwGetTime();
 	m_DeltaTime = currentFrame - m_LastFrame;
 	m_LastFrame = currentFrame;
+
+	m_CameraSpeed *= m_DeltaTime;
 }
 
 void CameraController::SetRatio(float newRatio) {
 	m_Camera->aspect = newRatio;
 }
 
-void CameraController::KeyboardCallback(GLFWwindow* window) 
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+void CameraController::ArrowKeysCallback(GLFWwindow* window, ArrowKeysFunction func = ArrowKeysFunction::MOVEMENT) {
+	switch (func) {
+	case ArrowKeysFunction::NONE:
+		break;
+	case ArrowKeysFunction::MOVEMENT:
+		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+			m_Camera->Position += m_CameraSpeed * m_Camera->FrontVector;
+		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+			m_Camera->Position -= m_CameraSpeed * m_Camera->FrontVector;
+		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+			m_Camera->Position -= glm::normalize(glm::cross(m_Camera->FrontVector, m_Camera->UpVector)) * cameraSpeed;
+		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+			m_Camera->Position += glm::normalize(glm::cross(m_Camera->FrontVector, m_Camera->UpVector)) * cameraSpeed;	
+		break;
+	case ArrowKeysFunction::VIEW:
+
+			glm::vec3 front = glm::vec3(
+				cos(glm::radians(m_camera->yaw)) * cos(glm::radians(m_camera->pitch)),
+				sin(glm::radians(m_camera->pitch)),
+				sin(glm::radians(m_camera->yaw)) * cos(glm::radians(m_camera->pitch))
+			);
+			m_camera->FrontVector = glm::normalize(front);
+		break;
+	default:
+		break;
+	}
+}
+
+void CameraController::KeyboardCallback(GLFWwindow* window) {
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_RELEASE) {
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	const float cameraSpeed = 2.5f * m_DeltaTime; // íàñòðîéòå ïî âàøåìó óñìîòðåíèþ
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		m_Camera->Position += cameraSpeed * m_Camera->FrontVector;
+		m_Camera->Position += m_CameraSpeed * m_Camera->FrontVector;
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		m_Camera->Position -= cameraSpeed * m_Camera->FrontVector;
+		m_Camera->Position -= m_CameraSpeed * m_Camera->FrontVector;
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		m_Camera->Position -= glm::normalize(glm::cross(m_Camera->FrontVector, m_Camera->UpVector)) * cameraSpeed;
+		m_Camera->Position -= glm::normalize(glm::cross(m_Camera->FrontVector, m_Camera->UpVector)) * m_CameraSpeed;
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		m_Camera->Position += glm::normalize(glm::cross(m_Camera->FrontVector, m_Camera->UpVector)) * cameraSpeed;
+		m_Camera->Position += glm::normalize(glm::cross(m_Camera->FrontVector, m_Camera->UpVector)) * m_CameraSpeed;
+	
 	// if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 	// {
 	// 	m_MouseMode = false;

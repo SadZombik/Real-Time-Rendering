@@ -5,6 +5,12 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
+enum class ArrowKeysFunction {
+    NONE,
+    MOVEMENT,
+    VIEW
+};
+
 class CameraController {
 public:
     CameraController(int width, int height);
@@ -17,9 +23,13 @@ public:
     void KeyboardCallback(GLFWwindow* window);
     void SetRatio(float newRatio);
 
+    void ArrowKeysCallback(GLFWwindow* window, ArrowKeysFunction func = ArrowKeysFunction::MOVEMENT);
+
 private:
     struct Camera;
     std::shared_ptr<Camera> m_Camera;
+    
+    float m_CameraSpeed = 2.5f;
 
     float m_DeltaTime;
 	float m_LastFrame;

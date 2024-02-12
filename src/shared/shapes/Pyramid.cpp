@@ -36,7 +36,7 @@ constexpr static float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f
 };
 
-constexpr static unsigned NumVertices = sizeof(vertices) / sizeof(float) / 5;
+constexpr static unsigned NUM_VERTICES = sizeof(vertices) / sizeof(float) / 5;
 
 Pyramid::Pyramid() {
     texture = Texture(res_dir + "/textures/3d/wood.png");
@@ -47,7 +47,6 @@ Pyramid::Pyramid() {
         res_dir + "/shaders/3d/fragment.glsl"
     );
     shader.Use();
-    shader.SetInt("pyramyd_texture", 0);
 
     VAO.Bind();
     VBO.Bind();
@@ -75,7 +74,7 @@ void Pyramid::Update(const CameraController& cam) {
     shader.SetVec3("in_color", color[0], color[1], color[2]);
 
     VAO.Bind();
-    glDrawArrays(GL_TRIANGLES, 0, NumVertices);
+    glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES);
     VAO.Unbind();
 }
 
@@ -86,5 +85,5 @@ void Pyramid::SetColor(float* newColor) {
 void Pyramid::SetShaders(const std::string& vertexPath, const std::string& fragmentPath) {
     shader = Shader(vertexPath, fragmentPath);
     shader.Use();
-    shader.SetInt("pyramyd_texture", 0);
+    shader.SetInt("texture", 0);
 }
