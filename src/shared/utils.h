@@ -40,4 +40,5 @@ constexpr void Vec(const vec_t& v) {
 }
 }; // namespace Print
 }; // namespace Utils
+
 #endif // !UTILS_H

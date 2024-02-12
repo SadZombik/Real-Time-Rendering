@@ -11,6 +11,8 @@
 
 static GLFWwindow *window;
 
+static bool isDepthTestEnabled = false;
+
 static void FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 }
@@ -54,6 +56,22 @@ namespace Framework {
     void EnableDepthTest() {
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
+        isDepthTestEnabled = true;
+    }
+
+    void DisableDepthTest() {
+        glDisable(GL_DEPTH_TEST);
+        isDepthTestEnabled = false;
+    }
+
+    void ClearBuffer() {
+        if (isDepthTestEnabled) {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        } else {
+            glClear(GL_COLOR_BUFFER_BIT);
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        }
     }
 
     void ImGuiCallback(const std::function<void()>& ImGuiCode) {

@@ -42,7 +42,7 @@ file(GLOB SHARED_SOURCE
 
 add_library(framework ${SHARED_SOURCE} ${IMGUI_SOURCE})
 target_include_directories(framework PUBLIC ${IMGUI_DIRECTORY})
-target_link_libraries(framework ${OPENGL_LIBRARIES} glad glfw stb_image glm)
+target_link_libraries(framework glad glfw stb_image glm)
 
 add_executable(2Dtransform 
 	src/transforms/2Dtransform.cpp

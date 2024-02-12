@@ -1,7 +1,6 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <string>
 #include <iostream>
@@ -17,7 +16,7 @@ public:
 	~Shader();
 	Shader& operator = (const Shader& other);
 
-	GLuint GetID() const;
+	unsigned int GetID() const;
 	void Use() const;
 
 	void SetInt		(const std::string& name, const int value) const;
@@ -29,11 +28,11 @@ public:
 	void SetMat4	(const std::string& name, const glm::mat4& mat) const;	
 
 private:
-	GLuint ID = 0;
+	unsigned int ID = 0;
 
 	std::string ParseShader(const std::string& filepath) const;
-	GLuint CompileShader(const std::string& source, const GLuint type) const;
-	GLuint CreateShader(const std::string& vertexShader, const std::string& fragmentShader) const;
+	unsigned int CompileShader(const std::string& source, const unsigned int type) const;
+	unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader) const;
 };
 
 #endif // !SHADER_H

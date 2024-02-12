@@ -32,8 +32,7 @@ int main() {
             cam.Update();
             cam.KeyboardCallback(window);
 
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            Framework::ClearBuffer();
 
             const auto q3 = glm::slerp(q1, q2, ++i * 0.001f);
 

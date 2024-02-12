@@ -51,8 +51,7 @@ int main() {
         cam.Update();
         cam.KeyboardCallback(window);
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        Framework::ClearBuffer();
 
         Framework::ImGuiCallback([&] {
             ImGui::Begin("Settings");

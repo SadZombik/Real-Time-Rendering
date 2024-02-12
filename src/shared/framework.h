@@ -21,6 +21,8 @@ namespace Framework {
     GLFWwindow* CreateWindow(int width, int height, const char* title);
 
     void EnableDepthTest();
+    void DisableDepthTest();
+    void ClearBuffer();
     void ImGuiCallback(const std::function<void()>& ImGuiCode);
 
     void Shutdown();

@@ -58,8 +58,7 @@ int main() {
 		    glfwSetWindowShouldClose(window, true);
         }
 
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        Framework::ClearBuffer();
 
         Framework::ImGuiCallback([&] {
             ImGui::Begin("Settings");
