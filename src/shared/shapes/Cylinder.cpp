@@ -2,37 +2,49 @@
 #include "../Framework.h"
 #include "../Utils.h"
 
+#include <vector>
 #include <array>
 
-static auto GenerateVertices(float radius, int vCount)
-{
-    float angle = 360.0f / vCount;
-    int triangleCount = vCount - 2;
+static constexpr int CIRCLE_VERTICES = 32;
+static constexpr int NUM_ELEMENTS = (CIRCLE_VERTICES + 1) * 3;
+static constexpr int NUM_INDICES = CIRCLE_VERTICES * 3;
 
-    std::vector<glm::vec3> vertices;
+static std::array<float, NUM_ELEMENTS> vertices;
+static std::array<int, NUM_INDICES> indices;
+
+static void GenerateVertices(float radius) {
+    constexpr float angle = 360.0f / CIRCLE_VERTICES;
+
+    // origin
+    vertices[0] = 0.0f; // x
+    vertices[1] = 0.0f; // y
+    vertices[2] = 0.0f; // z
+
+    indices[0] = 0;
+    indices[1] = 1;
+    indices[2] = CIRCLE_VERTICES;
 
     // positions
-    for (int i = 0; i < vCount; i++)
-    {
-        float currentAngle = angle * i;
-        float x = radius * cos(glm::radians(currentAngle));
-        float y = radius * sin(glm::radians(currentAngle));
-        float z = 0.0f;
+    for (auto i = 1; i < CIRCLE_VERTICES + 1; ++i) {
+        const float currentAngle = angle * (i - 1);
+        const float x = radius * cos(glm::radians(currentAngle));
+        const float y = radius * sin(glm::radians(currentAngle));
+        const float z = 0.0f;
 
-        vertices.push_back(glm::vec3(x, y, z));
+        vertices[(i * 3)]     = x;
+        vertices[(i * 3) + 1] = y;
+        vertices[(i * 3) + 2] = z;
+
+        if (i < CIRCLE_VERTICES) {
+            indices[(i * 3)]     = 0;
+            indices[(i * 3) + 1] = i + 1;
+            indices[(i * 3) + 2] = i;
+        }
     }
-
-    vertices.push_back(vertices[0]);
-    return vertices;
 }
 
-static constexpr int NUM_VERTICES = 32;
-
-static auto vertices = GenerateVertices(1, NUM_VERTICES);
-
 Cylinder::Cylinder() {
-    // texture = Texture(res_dir + "/textures/3d/wood.png");
-    // texture.Bind(0);
+    GenerateVertices(1.0f);
 
     shader = Shader(
         res_dir + "/shaders/3d/vertex_no_texture.glsl", 
@@ -40,11 +52,13 @@ Cylinder::Cylinder() {
     );
     shader.Use();
 
-    const auto pVertices = &vertices[0];
-
     VAO.Bind();
     VBO.Bind();
-    VBO.SetData(sizeof(glm::vec3) * vertices.size(), pVertices);
+
+    VBO.SetData(sizeof(vertices), vertices.data());
+
+    EBO.Bind();
+    EBO.SetData(sizeof(indices), indices.data());
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -62,14 +76,13 @@ void Cylinder::Update(const CameraController& cam) {
     shader.SetVec3("in_color", color[0], color[1], color[2]);
 
     VAO.Bind();
-    glDrawArrays(GL_LINE_STRIP, 0, NUM_VERTICES);
+    glDrawElements(renderMode, NUM_INDICES * sizeof(int), GL_UNSIGNED_INT, 0);
     VAO.Unbind();
 }
 
 void Cylinder::SetShaders(const std::string& vertexPath, const std::string& fragmentPath) {
     shader = Shader(vertexPath, fragmentPath);
     shader.Use();
-    shader.SetInt("texture", 0);
 }
 
 void Cylinder::SetModelMatrix(const glm::mat4& m) {
@@ -78,4 +91,8 @@ void Cylinder::SetModelMatrix(const glm::mat4& m) {
 
 void Cylinder::SetColor(float* newColor) {
     memcpy(color, newColor, sizeof(color));
+}
+
+void Cylinder::SetRenderMode(GLenum mode) {
+    renderMode = mode;
 }

@@ -80,8 +80,8 @@ enum class Direction {
 	LEFT = -1,
 	NONE = 0,
 	RIGHT = 1,
-	UP = LEFT,
-	DOWN = RIGHT
+	UP = RIGHT,
+	DOWN = LEFT
 };
 
 void CameraController::ArrowKeysCallback(GLFWwindow* window, ArrowKeysFunction func) {
