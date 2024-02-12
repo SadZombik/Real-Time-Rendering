@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 3.5)
 
 project(Rendering)
 
-set(all_targets 
+set(all_targets
 	2Dtransform
 	3Dtransform
 	quaternions_basics
 	slerp
-	arm_animation	
+	arm_animation
 )
 
 set(CMAKE_CXX_STANDARD 17)

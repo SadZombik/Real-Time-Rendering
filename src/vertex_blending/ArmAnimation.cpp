@@ -12,6 +12,7 @@ int main() {
 
     while (!glfwWindowShouldClose(window)) {
         cam.Update();
+        cam.ArrowKeysCallback(window, ArrowKeysFunction::VIEW);
         cam.KeyboardCallback(window);
 
         Framework::ClearBuffer();

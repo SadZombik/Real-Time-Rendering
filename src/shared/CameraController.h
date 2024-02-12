@@ -30,6 +30,8 @@ private:
     std::shared_ptr<Camera> m_Camera;
     
     float m_CameraSpeed = 2.5f;
+    float m_CurrentCameraSpeed = 0.0f;
+    float m_Sensitivity = 0.7f;
 
     float m_DeltaTime;
 	float m_LastFrame;

@@ -85,5 +85,5 @@ void Pyramid::SetColor(float* newColor) {
 void Pyramid::SetShaders(const std::string& vertexPath, const std::string& fragmentPath) {
     shader = Shader(vertexPath, fragmentPath);
     shader.Use();
-    shader.SetInt("texture", 0);
+    //shader.SetInt("texture_sampler", 0);
 }

@@ -45,8 +45,9 @@ int main() {
     constexpr float pi_deg = glm::degrees(IM_PI);
 
     while (!glfwWindowShouldClose(window)) {
-        cam.Update();
         cam.KeyboardCallback(window);
+        cam.ArrowKeysCallback(window, ArrowKeysFunction::VIEW);
+        cam.Update();
 
         Framework::ClearBuffer();
 

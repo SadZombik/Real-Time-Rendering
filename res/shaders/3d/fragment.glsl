@@ -5,9 +5,9 @@ in vec3 frag_pos;
 in vec2 frag_tex_coords;
 in vec3 out_color;
 
-uniform sampler2D texture;
+uniform sampler2D texture_sampler;
 
 void main()
 {
-    FragColor = vec4(out_color * texture(texture, frag_tex_coords).rgb, 1.0f);
+    FragColor = vec4(out_color * texture(texture_sampler, frag_tex_coords).rgb, 1.0f);
 }
