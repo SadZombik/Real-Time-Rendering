@@ -7,10 +7,8 @@
 static auto GenerateVertices(float radius, int vCount)
 {
     float angle = 360.0f / vCount;
-
     int triangleCount = vCount - 2;
 
-    std::vector<glm::vec3> temp;
     std::vector<glm::vec3> vertices;
 
     // positions
@@ -21,14 +19,16 @@ static auto GenerateVertices(float radius, int vCount)
         float y = radius * sin(glm::radians(currentAngle));
         float z = 0.0f;
 
-        temp.push_back(glm::vec3(x, y, z));
+        vertices.push_back(glm::vec3(x, y, z));
     }
 
-    temp.push_back(temp[0]);
-    return temp;
+    vertices.push_back(vertices[0]);
+    return vertices;
 }
 
-static auto vertices = GenerateVertices(1, 6);
+static constexpr int NUM_VERTICES = 32;
+
+static auto vertices = GenerateVertices(1, NUM_VERTICES);
 
 Cylinder::Cylinder() {
     // texture = Texture(res_dir + "/textures/3d/wood.png");
@@ -46,7 +46,6 @@ Cylinder::Cylinder() {
     VBO.Bind();
     VBO.SetData(sizeof(glm::vec3) * vertices.size(), pVertices);
 
-
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
@@ -63,7 +62,7 @@ void Cylinder::Update(const CameraController& cam) {
     shader.SetVec3("in_color", color[0], color[1], color[2]);
 
     VAO.Bind();
-    glDrawArrays(GL_LINE_STRIP, 0, vertices.size());
+    glDrawArrays(GL_LINE_STRIP, 0, NUM_VERTICES);
     VAO.Unbind();
 }
 
