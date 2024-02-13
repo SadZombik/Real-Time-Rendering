@@ -14,10 +14,12 @@ public:
     void SetShaders(const std::string& vertexPath, const std::string& fragmentPath);
     void SetModelMatrix(const glm::mat4& m);
     void SetColor(float* newColor);
-
     void SetRenderMode(GLenum mode);
+    void GenerateVertices(float radius, int circle_vertices = 32, int circle_instances = 1);
 
 private:
+    void BindBuffers();
+
     glm::mat4 model;
     Shader shader;
     VertexBufferObject VBO;

@@ -27,10 +27,14 @@ int main() {
 
     Cylinder cylinder;
 
-    float scale = 1.0f;
-    int currentMode = GL_LINE_STRIP;
+    float radius = 1.0f;
+    int num_vertices = 32;
+    int num_instances = 3;
 
+    int currentMode = GL_LINE_STRIP;
     const auto modesCount = renderModes.size();
+
+    float color[3] = { 128, 128, 128 };
 
     while (!glfwWindowShouldClose(window)) {
         Framework::ClearBuffer();
@@ -40,9 +44,6 @@ int main() {
         cam.Update();
 
         Framework::ImGuiCallback([&] {
-            ImGui::Text("Scale");
-            ImGui::SliderFloat("scale", &scale, 0.0f, 3.0f);
-
             if (ImGui::BeginListBox("##", ImVec2(-FLT_MIN, modesCount * ImGui::GetTextLineHeightWithSpacing()))) {
                 for (const auto& it : renderModes) {
                     const bool isSelected = (currentMode == it.first);
@@ -56,10 +57,21 @@ int main() {
                 }
                 ImGui::EndListBox();
             }
+
+            ImGui::Text("Color");
+            ImGui::ColorPicker3("color", color);
+
+            ImGui::Text("Geometry");
+            if (ImGui::SliderFloat("Radius", &radius, 0.0f, 3.0f)   ||
+                ImGui::SliderInt("Vertices", &num_vertices, 4, 256) || 
+                ImGui::SliderInt("Instances", &num_instances, 1, 10)
+                ) {
+                cylinder.GenerateVertices(radius, num_vertices, num_instances);
+            }
         });
 
-        const auto model = Transforms::GetUniformScaleMatrix(scale);
-        cylinder.SetModelMatrix(model);
+        cylinder.SetModelMatrix(glm::mat4(1.0));
+        cylinder.SetColor(color);
         cylinder.Update(cam);
 
         glfwSwapBuffers(window);
