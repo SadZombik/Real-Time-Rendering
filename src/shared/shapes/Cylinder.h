@@ -15,7 +15,7 @@ public:
     void SetModelMatrix(const glm::mat4& m);
     void SetColor(float* newColor);
     void SetRenderMode(GLenum mode);
-    void GenerateVertices(float radius, int circle_vertices = 32, int circle_instances = 1);
+    void GenerateVertices(float radius = 1.0f, float height = 1.0f, int circle_vertices = 32, int circle_instances = 1);
 
 private:
     void BindBuffers();

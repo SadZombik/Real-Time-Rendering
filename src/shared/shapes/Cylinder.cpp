@@ -3,7 +3,6 @@
 #include "../Utils.h"
 
 #include <vector>
-#include <array>
 
 static int NUM_VERTICES;
 static int NUM_INDICES; 
@@ -12,15 +11,17 @@ static int NUM_INSTANCES;
 static std::vector<float> vertices;
 static std::vector<int> indices;
 static std::vector<float> positions;
-
 static bool isGenerated = false;
 
-void Cylinder::GenerateVertices(float radius, int circle_vertices, int circle_instances) {
-    NUM_VERTICES = (circle_vertices + 1) * 3;
-    NUM_INDICES = circle_vertices * 3;
+void Cylinder::GenerateVertices(float radius, float height, int circle_vertices, int circle_instances) {
+    // "* 2" was added for cylinder shape
+    NUM_VERTICES = (circle_vertices + 1) * 3 * 2;
+    NUM_INDICES = circle_vertices * 3 * 2;
     NUM_INSTANCES = circle_instances * 3;
 
     const float angle = 360.0f / circle_vertices;
+    const int num_indices_2 = NUM_INDICES / 2;
+    const int num_vertices_2 = NUM_VERTICES / 2;
 
     vertices.resize(NUM_VERTICES);
     indices.resize(NUM_INDICES);
@@ -30,10 +31,16 @@ void Cylinder::GenerateVertices(float radius, int circle_vertices, int circle_in
     vertices[0] = 0.0f; // x
     vertices[1] = 0.0f; // y
     vertices[2] = 0.0f; // z
+    vertices[num_vertices_2]     = 0.0f; // x
+    vertices[num_vertices_2 + 1] = 0.0f; // y
+    vertices[num_vertices_2 + 2] = height; // z
 
     indices[0] = 0;
     indices[1] = 1;
     indices[2] = circle_vertices;
+    indices[num_indices_2]     = num_indices_2 / 3 + 1;
+    indices[num_indices_2 + 1] = num_indices_2 / 3 + 1 + 1;
+    indices[num_indices_2 + 2] = num_indices_2 / 3 + 1 + circle_vertices;
 
     positions[0] = 0.0f;
     positions[1] = 0.0f;
@@ -45,28 +52,30 @@ void Cylinder::GenerateVertices(float radius, int circle_vertices, int circle_in
         const float y = radius * sin(glm::radians(currentAngle));
         const float z = 0.0f;
 
-        vertices[(i * 3)]     = x;
-        vertices[(i * 3) + 1] = y;
-        vertices[(i * 3) + 2] = z;
+        vertices[i * 3]     = x;
+        vertices[i * 3 + 1] = y;
+        vertices[i * 3 + 2] = z;
+
+        vertices[i * 3 + num_vertices_2]     = x;
+        vertices[i * 3 + num_vertices_2 + 1] = y;
+        vertices[i * 3 + num_vertices_2 + 2] = height;
 
         if (i < circle_vertices) {
-            indices[(i * 3)]     = 0;
-            indices[(i * 3) + 1] = i + 1;
-            indices[(i * 3) + 2] = i;
+            indices[i * 3]     = 0;
+            indices[i * 3 + 1] = i + 1;
+            indices[i * 3 + 2] = i;
+
+            indices[i * 3 + num_indices_2]     = i;
+            indices[i * 3 + num_indices_2 + 1] = indices[i * 3 + 1] + circle_vertices + 1;
+            indices[i * 3 + num_indices_2 + 2] = indices[i * 3 + 2] + circle_vertices + 1;
         }
     }
 
     for (auto i = 1; i < circle_instances; ++i) {
-        positions[(i * 3)]     = 0.0f;
-        positions[(i * 3) + 1] = 0.0f;
-        positions[(i * 3) + 2] = (float)i;
+        positions[i * 3]     = 0.0f;
+        positions[i * 3 + 1] = 0.0f;
+        positions[i * 3 + 2] = (float)i;
     }
-
-    // std::cout << "positions.size() = " << positions.size();
-    // for (auto i = 0; i < positions.size(); ++i) {
-    //     if (i % 3 == 0) std::cout << '\n';
-    //     std::cout << positions[i] << " ";
-    // }
     BindBuffers();
     isGenerated = true;
 }
@@ -78,7 +87,13 @@ Cylinder::Cylinder() {
     );
     shader.Use();
 
-    GenerateVertices(1.0f, 32, 3);
+    GenerateVertices(1.0f, 6, 1);
+
+    std::cout << "Indices: " << std::endl;
+    Utils::Print::Array(indices);
+
+    std::cout << "Vertices: " << std::endl;
+    Utils::Print::Array(vertices);
 
     color[0] = 128;
     color[1] = 128;

@@ -28,8 +28,9 @@ int main() {
     Cylinder cylinder;
 
     float radius = 1.0f;
-    int num_vertices = 32;
-    int num_instances = 3;
+    float height = 1.0f;
+    int num_vertices = 6;
+    int num_instances = 1;
 
     int currentMode = GL_LINE_STRIP;
     const auto modesCount = renderModes.size();
@@ -63,10 +64,11 @@ int main() {
 
             ImGui::Text("Geometry");
             if (ImGui::SliderFloat("Radius", &radius, 0.0f, 3.0f)   ||
+                ImGui::SliderFloat("Height", &height, 0.0f, 10.0f)  ||
                 ImGui::SliderInt("Vertices", &num_vertices, 4, 256) || 
                 ImGui::SliderInt("Instances", &num_instances, 1, 10)
                 ) {
-                cylinder.GenerateVertices(radius, num_vertices, num_instances);
+                cylinder.GenerateVertices(radius, height, num_vertices, num_instances);
             }
         });
 

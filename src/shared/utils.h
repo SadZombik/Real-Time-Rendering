@@ -7,6 +7,24 @@
 namespace Utils {
 namespace Print {
 
+template <typename array_t>
+void Array(const array_t& arr) {
+    const size_t size = arr.size();
+    if (size % 3 != 0) {
+        for (auto i = 0; i < size; ++i) {
+            std::cout << arr[i] << " ";
+        }
+    } else {
+        for (auto i = 0; i < size / 3; ++i) {
+            std::cout << i << ") " <<
+                arr[i * 3] << " " <<
+                arr[i * 3 + 1] << " " <<
+                arr[i * 3 + 2] << " " << std::endl;
+        }
+    }
+    std::cout << '\n';
+}
+
 template <typename matrix_t>
 constexpr void Matrix(const matrix_t& m) {
     constexpr size_t size = m.length();
