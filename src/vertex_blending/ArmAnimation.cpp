@@ -23,6 +23,7 @@ int main() {
     Framework::EnableDepthTest();
 
     CameraController cam(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    cam.SetPitch(-30);
 
     Cylinder cylinder;
 

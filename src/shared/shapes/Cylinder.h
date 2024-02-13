@@ -23,6 +23,7 @@ private:
     VertexBufferObject VBO;
     VertexArrayObject VAO;
     ElementsBufferObject EBO;
+    VertexBufferObject instanceVBO;
     float lineWidth;
     float color[3];
     GLenum renderMode = GL_LINE_STRIP;

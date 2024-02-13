@@ -22,7 +22,7 @@ CameraController::CameraController(int width, int height) {
 
     m_Camera = std::make_shared<Camera>();
 
-    m_Camera->Position    = glm::vec3(0.0f, 0.0f, 3.0f);
+    m_Camera->Position    = glm::vec3(0.0f, 2.0f, 3.0f);
     m_Camera->FrontVector = glm::vec3(0.0f, 0.0f, -1.0f);
     m_Camera->UpVector    = glm::vec3(0.0f, 1.0f, 0.0f);
     m_Camera->yaw         = -90.0f;
@@ -33,6 +33,14 @@ CameraController::CameraController(int width, int height) {
     m_Camera->firstMouse  = true;
     m_Camera->aspect      = (float)width / (float)height;
 
+	CalculateFronVector();
+}
+
+CameraController::~CameraController() {
+
+}
+
+void CameraController::CalculateFronVector() {
 	glm::vec3 front = glm::vec3(
 		glm::cos(glm::radians(m_Camera->yaw)) * glm::cos(glm::radians(m_Camera->pitch)),
 		glm::sin(glm::radians(m_Camera->pitch)),
@@ -41,12 +49,7 @@ CameraController::CameraController(int width, int height) {
 	m_Camera->FrontVector = glm::normalize(front);
 }
 
-CameraController::~CameraController() {
-
-}
-
-glm::mat4 CameraController::GetPerspectiveMatrix() const
-{
+glm::mat4 CameraController::GetPerspectiveMatrix() const {
 	return glm::perspective(
 		glm::radians(m_Camera->fov),
 		m_Camera->aspect,
@@ -55,8 +58,7 @@ glm::mat4 CameraController::GetPerspectiveMatrix() const
 	);
 }
 
-glm::mat4 CameraController::GetViewMatrix() const
-{
+glm::mat4 CameraController::GetViewMatrix() const {
 	return glm::lookAt(
 		m_Camera->Position,
 		m_Camera->Position + m_Camera->FrontVector,
@@ -74,6 +76,17 @@ void CameraController::Update() {
 
 void CameraController::SetRatio(float newRatio) {
 	m_Camera->aspect = newRatio;
+	CalculateFronVector();
+}
+
+void CameraController::SetYaw(float yaw) {
+	m_Camera->yaw = yaw;
+	CalculateFronVector();
+}
+
+void CameraController::SetPitch(float pitch) {
+	m_Camera->pitch = pitch;
+	CalculateFronVector();
 }
 
 enum class Direction {

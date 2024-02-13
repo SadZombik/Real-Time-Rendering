@@ -21,11 +21,15 @@ public:
 
     void Update();
     void KeyboardCallback(GLFWwindow* window);
-    void SetRatio(float newRatio);
-
     void ArrowKeysCallback(GLFWwindow* window, ArrowKeysFunction func = ArrowKeysFunction::MOVEMENT);
+    
+    void SetRatio(float newRatio);
+    void SetYaw(float yaw);
+    void SetPitch(float pitch);
 
 private:
+    void CalculateFronVector();
+
     struct Camera;
     std::shared_ptr<Camera> m_Camera;
     

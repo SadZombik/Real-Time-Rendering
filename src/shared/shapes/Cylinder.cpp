@@ -6,11 +6,17 @@
 #include <array>
 
 static constexpr int CIRCLE_VERTICES = 32;
+static constexpr int CIRCLE_INSTANCES = 3;
+
 static constexpr int NUM_ELEMENTS = (CIRCLE_VERTICES + 1) * 3;
 static constexpr int NUM_INDICES = CIRCLE_VERTICES * 3;
+static constexpr int NUM_INSTANCES = CIRCLE_INSTANCES * 3;
 
 static std::array<float, NUM_ELEMENTS> vertices;
 static std::array<int, NUM_INDICES> indices;
+static std::array<float, NUM_INSTANCES> positions;
+
+static bool isGenerated = false;
 
 static void GenerateVertices(float radius) {
     constexpr float angle = 360.0f / CIRCLE_VERTICES;
@@ -24,7 +30,10 @@ static void GenerateVertices(float radius) {
     indices[1] = 1;
     indices[2] = CIRCLE_VERTICES;
 
-    // positions
+    positions[0] = 0.0f;
+    positions[1] = 0.0f;
+    positions[2] = 0.0f;
+
     for (auto i = 1; i < CIRCLE_VERTICES + 1; ++i) {
         const float currentAngle = angle * (i - 1);
         const float x = radius * cos(glm::radians(currentAngle));
@@ -41,27 +50,45 @@ static void GenerateVertices(float radius) {
             indices[(i * 3) + 2] = i;
         }
     }
+
+    for (auto i = 1; i < CIRCLE_INSTANCES; ++i) {
+        positions[(i * 3)]     = 0.0f;
+        positions[(i * 3) + 1] = 0.0f;
+        positions[(i * 3) + 2] = (float)i;
+    }
+    isGenerated = true;
 }
 
 Cylinder::Cylinder() {
-    GenerateVertices(1.0f);
+    if (!isGenerated) {
+        GenerateVertices(1.0f);
+    }
 
     shader = Shader(
-        res_dir + "/shaders/3d/vertex_no_texture.glsl", 
+        res_dir + "/shaders/cylinder/vertex.glsl", 
         res_dir + "/shaders/3d/fragment_no_texture.glsl"
     );
     shader.Use();
 
+    instanceVBO.Bind();
+    instanceVBO.SetData(sizeof(positions), positions.data());
+    instanceVBO.Unbind();
+
     VAO.Bind();
     VBO.Bind();
-
     VBO.SetData(sizeof(vertices), vertices.data());
 
     EBO.Bind();
     EBO.SetData(sizeof(indices), indices.data());
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+    instanceVBO.Bind();
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    instanceVBO.Unbind();
+    glVertexAttribDivisor(1, 1);
 
     color[0] = 128;
     color[1] = 128;
@@ -76,7 +103,7 @@ void Cylinder::Update(const CameraController& cam) {
     shader.SetVec3("in_color", color[0], color[1], color[2]);
 
     VAO.Bind();
-    glDrawElements(renderMode, NUM_INDICES * sizeof(int), GL_UNSIGNED_INT, 0);
+    glDrawElementsInstanced(renderMode, NUM_INDICES, GL_UNSIGNED_INT, 0, 3);
     VAO.Unbind();
 }
 

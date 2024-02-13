@@ -214,4 +214,6 @@ private:
     std::string m_Path;
 };
 
+// TODO: VertexAttrib ...
+
 #endif // !OPENGLOBJECTS_H
