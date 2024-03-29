@@ -764,3 +764,4 @@ called stitching.
 
 A single vertex can be transformed by several different matrices, with the resulting locations weighted
 and blended together.
+

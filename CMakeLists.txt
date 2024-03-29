@@ -3,11 +3,9 @@ cmake_minimum_required(VERSION 3.5)
 project(Rendering)
 
 set(all_targets
-	2Dtransform
-	3Dtransform
-	quaternions_basics
-	slerp
-	arm_animation
+	transforms
+	quaternions
+	vertex_blending
 )
 
 set(CMAKE_CXX_STANDARD 17)
@@ -47,32 +45,19 @@ file(GLOB SHARED_SOURCE
 	"src/shared/*.cpp"
 )
 
+add_compile_definitions(RES_DIR=${CMAKE_CURRENT_SOURCE_DIR}/res)
+
 add_library(framework ${SHARED_SOURCE} ${IMGUI_SOURCE})
 target_include_directories(framework PUBLIC ${IMGUI_DIRECTORY})
 target_link_libraries(framework glad glfw stb_image glm)
 
-add_executable(2Dtransform 
-	src/transforms/2Dtransform.cpp
-)
-
-add_executable(3Dtransform 
-	src/transforms/3Dtransform.cpp
-)
-
-add_executable(quaternions_basics
-	src/quaternions/basics.cpp
-)
-
-add_executable(slerp
-	src/quaternions/slerp.cpp
-)
-
-add_executable(arm_animation
-	src/vertex_blending/ArmAnimation.cpp
-)
-
-add_compile_definitions(RES_DIR=${CMAKE_CURRENT_SOURCE_DIR}/res)
 foreach(target ${all_targets})
-	target_include_directories(${target} PRIVATE src/shared)
-	target_link_libraries(${target} framework)
+	file(GLOB SOURCES "src/${target}/*.cpp")
+	foreach(SOURCE ${SOURCES})
+		get_filename_component(FILENAME ${SOURCE} NAME_WE)
+		add_executable(${FILENAME} ${SOURCE})
+
+		target_include_directories(${FILENAME} PRIVATE src/shared)
+		target_link_libraries(${FILENAME} framework)
+	endforeach()
 endforeach()

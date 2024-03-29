@@ -87,7 +87,7 @@ Cylinder::Cylinder() {
     );
     shader.Use();
 
-    GenerateVertices(1.0f, 6, 1);
+    GenerateVertices(1.0f, 1.0f, 6, 1);
 
     std::cout << "Indices: " << std::endl;
     Utils::Print::Array(indices);

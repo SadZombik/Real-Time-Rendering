@@ -12,6 +12,7 @@
 #include <backends/imgui_impl_opengl3.h>
 
 #include <shapes/Pyramid.h>
+#include <shapes/Cylinder.h>
 
 void WindowSizeCallback(GLFWwindow* window, int width, int height) {
     CameraController* cam = static_cast<CameraController*>(glfwGetWindowUserPointer(window));
@@ -27,6 +28,8 @@ int main() {
     glfwSetWindowSizeCallback(window, WindowSizeCallback);
 
     Pyramid pyramid;
+    Cylinder cylinder;
+    cylinder.GenerateVertices(1, 3, 256, 1);
 
     float t_x = 0.0f;
     float t_y = 0.0f;
@@ -115,6 +118,9 @@ int main() {
             pyramid.SetModelMatrix(model);
             pyramid.SetColor(color);
             pyramid.Update(cam);
+
+            cylinder.SetModelMatrix(model);
+            cylinder.Update(cam);
         }
         glfwSwapBuffers(window);
         glfwPollEvents();
