@@ -97,7 +97,7 @@ namespace Transforms {
         return glm::translate(I, glm::vec3{t_x, t_y, t_z});
     }
 
-    glm::mat4 GetRotationMatrix(const float angle, glm::vec3& axis) {
+    glm::mat4 GetRotationMatrix(const float angle, const glm::vec3& axis) {
         const auto angle_rad = glm::radians(angle);
         return glm::rotate(I, angle_rad, axis);
     }

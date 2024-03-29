@@ -86,7 +86,7 @@ unsigned int Shader::CompileShader(const std::string& source, unsigned int type)
 	if (result == GL_FALSE) {
 		int lenght;
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &lenght);
-		char* message = (char*)_malloca(lenght * sizeof(char)); // allocating on the stack
+		char* message = (char*)malloc(lenght * sizeof(char)); // allocating on the stack
 		glGetShaderInfoLog(id, lenght, &lenght, message);
 		std::cout
 			<< "Failed to compile "
@@ -94,6 +94,7 @@ unsigned int Shader::CompileShader(const std::string& source, unsigned int type)
 			<< '\n' << message
 			<< std::endl;
 		glDeleteShader(id);
+		free(message);
 		return 0;
 	}
 	return id;

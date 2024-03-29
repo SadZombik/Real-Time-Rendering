@@ -1,5 +1,5 @@
 #include <glad/glad.h>
-#include <glfw/glfw3.h>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -82,7 +82,7 @@ int main() {
 
         {
             shader.Use();
-            
+
             const auto T = Transforms::GetTranslationMatrix(t_x, t_y, 0.0f);
             const auto R = Transforms::GetRotationMatrix(angle, glm::vec3{0.0f, 0.0f, 1.0f});
             const auto S = Transforms::GetUniformScaleMatrix(scale);

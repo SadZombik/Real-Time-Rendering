@@ -39,7 +39,7 @@ namespace Framework {
 namespace Transforms {
     struct TransformParameters;
     glm::mat4 GetTranslationMatrix(const float t_x, const float t_y, const float t_z);
-    glm::mat4 GetRotationMatrix(const float angle, glm::vec3& axis);
+    glm::mat4 GetRotationMatrix(const float angle, const glm::vec3& axis);
     glm::mat4 GetScaleMatrix(const float s_x, const float s_y, const float s_z);
     glm::mat4 GetUniformScaleMatrix(const float s);
     glm::mat4 GetShearMatrix(const glm::vec2& l_x, const glm::vec2& l_y, const glm::vec2& l_z);
