@@ -81,72 +81,66 @@ void Cylinder::GenerateVertices(float radius, float height, int circle_vertices,
 }
 
 Cylinder::Cylinder() {
-    shader = Shader(
+    m_Shader = Shader(
         res_dir + "/shaders/cylinder/vertex.glsl", 
         res_dir + "/shaders/3d/fragment_no_texture.glsl"
     );
-    shader.Use();
+    m_Shader.Use();
 
     GenerateVertices(1.0f, 1.0f, 6, 1);
 
-    std::cout << "Indices: " << std::endl;
-    Utils::Print::Array(indices);
-
-    std::cout << "Vertices: " << std::endl;
-    Utils::Print::Array(vertices);
-
-    color[0] = 128;
-    color[1] = 128;
-    color[2] = 128;
+    m_Color[0] = 128;
+    m_Color[1] = 128;
+    m_Color[2] = 128;
 }
 
 void Cylinder::BindBuffers() {
-    instanceVBO.Bind();
-    instanceVBO.SetData(NUM_INSTANCES * sizeof(float), positions.data());
-    instanceVBO.Unbind();
+    m_InstanceVBO.Bind();
+    m_InstanceVBO.SetData(NUM_INSTANCES * sizeof(float), positions.data());
+    m_InstanceVBO.Unbind();
 
-    VAO.Bind();
-    VBO.Bind();
-    VBO.SetData(NUM_VERTICES * sizeof(float), vertices.data());
+    m_VAO.Bind();
+    m_VBO.Bind();
+    m_VBO.SetData(NUM_VERTICES * sizeof(float), vertices.data());
 
-    EBO.Bind();
-    EBO.SetData(NUM_INDICES * sizeof(int), indices.data());
+    m_EBO.Bind();
+    m_EBO.SetData(NUM_INDICES * sizeof(int), indices.data());
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-    instanceVBO.Bind();
+    m_InstanceVBO.Bind();
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    instanceVBO.Unbind();
+    m_InstanceVBO.Unbind();
     glVertexAttribDivisor(1, 1);
 }
 
 void Cylinder::Update(const CameraController& cam) {
-    shader.Use();
-    shader.SetMat4("projection", cam.GetPerspectiveMatrix());
-    shader.SetMat4("view", cam.GetViewMatrix());
-    shader.SetMat4("model", model);
-    shader.SetVec3("in_color", color[0], color[1], color[2]);
+    m_Shader.Use();
+    m_Shader.SetMat4("projection", cam.GetPerspectiveMatrix());
+    m_Shader.SetMat4("view", cam.GetViewMatrix());
+    m_Shader.SetMat4("model", m_Model);
+    m_Shader.SetVec3("in_color", m_Color[0], m_Color[1], m_Color[2]);
 
-    VAO.Bind();
-    glDrawElementsInstanced(renderMode, NUM_INDICES, GL_UNSIGNED_INT, 0, NUM_INSTANCES / 3);
-    VAO.Unbind();
+    m_VAO.Bind();
+    glDrawElementsInstanced(m_RenderMode, NUM_INDICES, GL_UNSIGNED_INT, 0, NUM_INSTANCES / 3);
+    m_VAO.Unbind();
 }
 
 void Cylinder::SetShaders(const std::string& vertexPath, const std::string& fragmentPath) {
-    shader = Shader(vertexPath, fragmentPath);
-    shader.Use();
+    m_Shader = Shader(vertexPath, fragmentPath);
+    m_Shader.Use();
 }
 
 void Cylinder::SetModelMatrix(const glm::mat4& m) {
-    model = m;
+    m_Model = m;
 }
 
 void Cylinder::SetColor(float* newColor) {
-    memcpy(color, newColor, sizeof(color));
+    memcpy(m_Color, newColor, sizeof(m_Color));
 }
 
 void Cylinder::SetRenderMode(GLenum mode) {
-    renderMode = mode;
+    m_RenderMode = mode;
 }

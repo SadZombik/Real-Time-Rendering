@@ -15,20 +15,20 @@ public:
     void SetModelMatrix(const glm::mat4& m);
     void SetColor(float* newColor);
     void SetRenderMode(GLenum mode);
-    void GenerateVertices(float radius = 1.0f, float height = 1.0f, int circle_vertices = 32, int circle_instances = 1);
+    void GenerateVertices(float radius = 1.0f, float height = 1.0f, int circleVertices = 32, int circleInstances = 1);
 
 private:
     void BindBuffers();
 
-    glm::mat4 model;
-    Shader shader;
-    VertexBufferObject VBO;
-    VertexArrayObject VAO;
-    ElementsBufferObject EBO;
-    VertexBufferObject instanceVBO;
-    float lineWidth;
-    float color[3];
-    GLenum renderMode = GL_LINE_STRIP;
+    glm::mat4 m_Model;
+    Shader m_Shader;
+    VertexBufferObject m_VBO;
+    VertexArrayObject m_VAO;
+    ElementsBufferObject m_EBO;
+    VertexBufferObject m_InstanceVBO;
+    float m_LineWidth;
+    float m_Color[3];
+    GLenum m_RenderMode = GL_LINE_STRIP;
 };
 
 #endif // !CYLINDER_H

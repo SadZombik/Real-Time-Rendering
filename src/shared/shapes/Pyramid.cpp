@@ -39,51 +39,51 @@ constexpr static float vertices[] = {
 constexpr static unsigned NUM_VERTICES = sizeof(vertices) / sizeof(float) / 5;
 
 Pyramid::Pyramid() {
-    texture = Texture(res_dir + "/textures/3d/wood.png");
-    texture.Bind(0);
+    m_Texture = Texture(res_dir + "/textures/3d/wood.png");
+    m_Texture.Bind(0);
 
-    shader = Shader(
+    m_Shader = Shader(
         res_dir + "/shaders/3d/vertex.glsl", 
         res_dir + "/shaders/3d/fragment.glsl"
     );
-    shader.Use();
+    m_Shader.Use();
 
-    VAO.Bind();
-    VBO.Bind();
-    VBO.SetData(sizeof(vertices), vertices);
+    m_VAO.Bind();
+    m_VBO.Bind();
+    m_VBO.SetData(sizeof(vertices), vertices);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    color[0] = 128;
-    color[1] = 128;
-    color[2] = 128;
+    m_Color[0] = 128;
+    m_Color[1] = 128;
+    m_Color[2] = 128;
 }
 
 void Pyramid::SetModelMatrix(const glm::mat4& m) {
-    model = m;
+    m_Model = m;
 }
 
 void Pyramid::Update(const CameraController& cam) {
-    shader.Use();
-    shader.SetMat4("projection", cam.GetPerspectiveMatrix());
-    shader.SetMat4("view", cam.GetViewMatrix());
-    shader.SetMat4("model", model);
-    shader.SetVec3("in_color", color[0], color[1], color[2]);
+    m_Shader.Use();
+    m_Shader.SetMat4("projection", cam.GetPerspectiveMatrix());
+    m_Shader.SetMat4("view", cam.GetViewMatrix());
+    m_Shader.SetMat4("model", m_Model);
+    m_Shader.SetVec3("in_color", m_Color[0], m_Color[1], m_Color[2]);
 
-    VAO.Bind();
+    m_VAO.Bind();
     glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES);
-    VAO.Unbind();
+    m_VAO.Unbind();
 }
 
 void Pyramid::SetColor(float* newColor) {
-    memcpy(color, newColor, sizeof(color));
+    memcpy(m_Color, newColor, sizeof(m_Color));
 }
 
 void Pyramid::SetShaders(const std::string& vertexPath, const std::string& fragmentPath) {
-    shader = Shader(vertexPath, fragmentPath);
-    shader.Use();
+    m_Shader = Shader(vertexPath, fragmentPath);
+    m_Shader.Use();
     //shader.SetInt("texture_sampler", 0);
 }

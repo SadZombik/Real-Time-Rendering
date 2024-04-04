@@ -16,12 +16,12 @@ public:
     void SetColor(float* newColor);
 
 private:
-    glm::mat4 model;
-    Shader shader;
-    VertexBufferObject VBO;
-    VertexArrayObject VAO;
-    Texture texture;
-    float color[3];
+    glm::mat4 m_Model;
+    Shader m_Shader;
+    VertexBufferObject m_VBO;
+    VertexArrayObject m_VAO;
+    Texture m_Texture;
+    float m_Color[3];
 };
 
 #endif // !PYRAMID_H
