@@ -41,8 +41,8 @@ add_subdirectory(dependencies/stb_image)
 add_subdirectory(dependencies/glm)
 
 file(GLOB SHARED_SOURCE 
-	"src/shared/shapes/*.cpp",
-	"src/shared/*.cpp"
+	src/shared/shapes/*.cpp
+	src/shared/*.cpp
 )
 
 add_compile_definitions(RES_DIR=${CMAKE_CURRENT_SOURCE_DIR}/res)
