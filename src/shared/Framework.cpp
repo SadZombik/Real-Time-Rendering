@@ -42,7 +42,7 @@ namespace Framework {
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO(); (void)io;
         ImGui_ImplGlfw_InitForOpenGL(window, true);
-        ImGui_ImplOpenGL3_Init("#version 460 core");
+        ImGui_ImplOpenGL3_Init("#version 410 core");
         ImGui::StyleColorsDark();
 
         return window;

@@ -763,5 +763,22 @@ called stitching.
 </p>
 
 A single vertex can be transformed by several different matrices, with the resulting locations weighted
-and blended together.
+and blended together. This is done by having skeleton bones.
+
+Vertex blending equation:
+$$
+    u(t) = \sum_{i=0}^{n-1} w_i B_i(t) M_i^{-1} p, \text{where} 
+        \sum_{i=0}^{n-1} w_i = 1, w_i > 0
+$$
+
+* $p$ is the original vertex,
+* $u(t)$ is the transformed vertex whose position depends on the time $t$.
+* $n$ is the number of bones influencing the position $p$, which is expressed in world coordinates.
+* The matrix $M_i$ transforms from the initial bone's coordinate system to
+world coordinates.
+* The matrix $B_i(t)$ is the *i*th bone's world transform that changes
+with the time to animate the object.
+* $w_i$ is the weight of bone $i$ for vertex $p$.
+
+## 4.5 Morphing
 

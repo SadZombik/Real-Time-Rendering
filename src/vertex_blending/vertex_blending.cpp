@@ -36,6 +36,9 @@ int main() {
     const auto modesCount = renderModes.size();
 
     float color[3] = { 128, 128, 128 };
+    float t_x = 0.0f;
+    float t_y = 0.0f;
+    float t_z = 0.0f;
 
     while (!glfwWindowShouldClose(window)) {
         Framework::ClearBuffer();
@@ -62,17 +65,27 @@ int main() {
             ImGui::Text("Color");
             ImGui::ColorPicker3("color", color);
 
+            ImGui::Text("Translation");
+            ImGui::SliderFloat("Tx", &t_x, -1.0f, 1.0f);
+            ImGui::SliderFloat("Ty", &t_y, -1.0f, 1.0f);
+            ImGui::SliderFloat("Tz", &t_z, -1.0f, 1.0f);
+
             ImGui::Text("Geometry");
             if (ImGui::SliderFloat("Radius", &radius, 0.0f, 3.0f)   ||
                 ImGui::SliderFloat("Height", &height, 0.0f, 10.0f)  ||
                 ImGui::SliderInt("Vertices", &num_vertices, 4, 256) || 
-                ImGui::SliderInt("Instances", &num_instances, 1, 10)
+                ImGui::SliderInt("Instances", &num_instances, 1, NUM_CYLINDER_INSTANCES)
                 ) {
                 cylinder.GenerateVertices(radius, height, num_vertices, num_instances);
             }
         });
 
-        cylinder.SetModelMatrix(glm::mat4(1.0));
+        const auto T = Transforms::GetTranslationMatrix(t_x, t_y, t_z);
+
+        for (int i = 0; i < NUM_CYLINDER_INSTANCES; i++) {
+            cylinder.SetModelMatrix(T, i);
+        }
+
         cylinder.SetColor(color);
         cylinder.Update(cam);
 

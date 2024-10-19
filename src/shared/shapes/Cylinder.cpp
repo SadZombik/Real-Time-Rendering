@@ -74,7 +74,7 @@ void Cylinder::GenerateVertices(float radius, float height, int circle_vertices,
     for (auto i = 1; i < circle_instances; ++i) {
         positions[i * 3]     = 0.0f;
         positions[i * 3 + 1] = 0.0f;
-        positions[i * 3 + 2] = (float)i;
+        positions[i * 3 + 2] = (float)i * 1.5f;
     }
     BindBuffers();
     isGenerated = true;
@@ -111,16 +111,27 @@ void Cylinder::BindBuffers() {
 
     m_InstanceVBO.Bind();
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    m_InstanceVBO.Unbind();
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)0);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)(1 * sizeof(glm::vec4)));
+    glEnableVertexAttribArray(3); 
+    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)(2 * sizeof(glm::vec4)));
+    glEnableVertexAttribArray(4); 
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)(3 * sizeof(glm::vec4)));
+
     glVertexAttribDivisor(1, 1);
+    glVertexAttribDivisor(2, 1);
+    glVertexAttribDivisor(3, 1);
+    glVertexAttribDivisor(4, 1);
+
+    glBufferSubData(GL_ARRAY_BUFFER, 0, NUM_CYLINDER_INSTANCES * sizeof(glm::mat4), &m_Models[0]);
+    m_InstanceVBO.Unbind();
 }
 
 void Cylinder::Update(const CameraController& cam) {
     m_Shader.Use();
     m_Shader.SetMat4("projection", cam.GetPerspectiveMatrix());
     m_Shader.SetMat4("view", cam.GetViewMatrix());
-    m_Shader.SetMat4("model", m_Model);
     m_Shader.SetVec3("in_color", m_Color[0], m_Color[1], m_Color[2]);
 
     m_VAO.Bind();
@@ -133,8 +144,8 @@ void Cylinder::SetShaders(const std::string& vertexPath, const std::string& frag
     m_Shader.Use();
 }
 
-void Cylinder::SetModelMatrix(const glm::mat4& m) {
-    m_Model = m;
+void Cylinder::SetModelMatrix(const glm::mat4& m, int index) {
+    m_Models[index] = m;
 }
 
 void Cylinder::SetColor(float* newColor) {

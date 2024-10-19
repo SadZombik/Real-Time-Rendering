@@ -1,6 +1,7 @@
 #ifndef FRAMEWORK_H
 #define FRAMEWORK_H
 
+#include <string>
 #include <string_view>
 #include <glm/glm.hpp>
 #include <functional>
